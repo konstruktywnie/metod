@@ -1,0 +1,4 @@
+-c  #-O2
+-mwindows -luser32 -lmingw32 -lSDLmain -lSDL -lSDL_image -s   
+framework_dependent
+.

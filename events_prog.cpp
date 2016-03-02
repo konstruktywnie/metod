@@ -1,0 +1,1 @@
+#include "events.h"extern bool PEvents[];extern bool KEvents[];extern bool GEvents[];void attendProgEvents() {  if( PEvents[ EVENT_TILESET_ANIMATION ] ) {    //...	PEvents[ EVENT_TILESET_ANIMATION ] = false;	return;  }}

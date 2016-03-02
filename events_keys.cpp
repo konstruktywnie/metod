@@ -1,0 +1,1 @@
+#include "events.h"extern bool PEvents[];extern bool KEvents[];extern bool GEvents[];void attendKeyEvents() {}void attendKeyEventsMenu() {}
