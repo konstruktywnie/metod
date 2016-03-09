@@ -15,7 +15,7 @@ theGame::theGame() {
   screens[ SCREEN_MENU ].windows[ 0 ]->planes.resize( 1 );
   //screens[ SCREEN_MENU ].windows[ 0 ]->planes[ 0 ] = _LOAD_IMG( RES_BACKGROUND );
   screens[ SCREEN_MENU ].windows[ 0 ]->regularPlanesNR = 1;
-  screens[ SCREEN_MENU ].windows[ 0 ]->planes[ 0 ] = optimizedSurface( RES_BACKGROUND, scrWidth, scrHeight );
+  screens[ SCREEN_MENU ].windows[ 0 ]->planes[ 0 ] = optimizedSurface( res->bGround, scrWidth, scrHeight );
   
 }
 

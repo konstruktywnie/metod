@@ -5,7 +5,7 @@
 appResources::appResources()
 {
   mainTileset.loadFromFile( RES_MAIN_TILESET, 0, 0 );
-  
+  bGround = _LOAD_IMG( RES_BACKGROUND );
 }
 
 
@@ -98,14 +98,14 @@ void tileSet::translucentToTransparent() {
 }
 
 
-_SURFACE* optimizedSurface( char* f, _SIZE w, _SIZE h ) {
-  _SURFACE* image = _LOAD_IMG( f );
-  _SURFACE* destination;
+_SURFACE* optimizedSurface( _SURFACE* image, _SIZE w, _SIZE h ) 
+{
+  _SURFACE* destination = _EMPTY_PLANE( w, h, TRANSLUCENT_RGBA );;
 
   if( (w == image->w && h == image->h) || (w == 0 && h == 0) ) {
-    destination = _LOAD_IMG( f );
-  } else {
-    destination = _EMPTY_PLANE( w, h, TRANSLUCENT_RGBA );
+    _SURFACE_COPY( image, destination );
+  } else 
+  {
 	_RECTANGLE s, d;
 	s.x = d.x = 0;
 	s.y = d.y = 0;
@@ -133,9 +133,9 @@ _SURFACE* optimizedSurface( char* f, _SIZE w, _SIZE h ) {
 	}
   }
 
-//  _SURFACE* optimized = _CONVERT_SURFACE( destination );
-//  _FREE_SURFACE( destination );
+/*  _SURFACE* optimized = _CONVERT_SURFACE( destination );
+  _FREE_SURFACE( destination );
   _FREE_SURFACE( image );
-//  return optimized;
+  return optimized;*/
   return destination;
 }
