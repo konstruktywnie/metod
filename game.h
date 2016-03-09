@@ -1,9 +1,10 @@
 
 struct theGame {
-  
+  uint32 scrWidth, scrHeight;
   theScreen* screens;
-  uchar actualScr;
+  uint8 actualScr;
   theLevel* lvl;
   appResources* res;
   
+  theGame();
 };
