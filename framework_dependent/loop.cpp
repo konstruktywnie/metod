@@ -20,8 +20,16 @@ void _FRAMEWORK_LOOP()
 		  }
 		  attendProgEvents();
 		break;
+		case SDL_QUIT:
+		  run = false;
+		break;
 	  }
-	  run = false;
+	  
   }
 
+}
+
+
+void _FRAMEWORK_END() {
+  SDL_Quit();
 }
