@@ -47,6 +47,9 @@ inline void _SURFACE_BLIT( _SURFACE* src, _RECTANGLE* srcRect, _SURFACE* dst, _R
 {
   SDL_BlitSurface( src, srcRect, dst, dstRect );
 }
+inline void _SURFACE_COPY( _SURFACE* src, _SURFACE* dst ) {
+  _SURFACE_BLIT( src, NULL, dst, NULL );
+}
 inline void _FILL_RECT( _SURFACE* s, _RECTANGLE* clear, _COLOR color ) {
   SDL_FillRect( s, clear, color );
 }
