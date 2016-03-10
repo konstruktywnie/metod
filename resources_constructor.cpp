@@ -1,6 +1,8 @@
 #include "framework_dependent/fw.h"
 #include "engine2d/resources.h"
 #include "config.h"
+#include "config_resources.h"
+
 
 appResources::appResources()
 {

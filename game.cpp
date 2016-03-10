@@ -1,7 +1,8 @@
 #include "framework_dependent/fw.h"
 #include "config.h"
-#include "resources.h"
-#include "screen.h"
+#include "config_screen.h"
+#include "engine2d/resources.h"
+#include "engine2d/screen.h"
 #include "level.h"
 #include "game.h"
 

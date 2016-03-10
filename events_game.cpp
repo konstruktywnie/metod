@@ -1,1 +1,1 @@
-#include "events.h"extern bool PEvents[];extern bool KEvents[];extern bool GEvents[];void attendGameEvents() {}
+#include "config_events.h"extern bool PEvents[];extern bool KEvents[];extern bool GEvents[];void attendGameEvents() {}
