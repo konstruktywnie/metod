@@ -13,13 +13,13 @@
   $stopOnMsg = " error: ";
   
   if( getCMLArgs( "-help", 1, true ) || getCMLArgs( "--help", 1, true ) || getCMLArgs( "/?", 1, true ) ) {
-    echo "Easy compiling for c++ v2.1,  usage: ccpp.exe [options]\n\n";
+    echo "Easy compiling for c++ v2.1,  usage: ccpp [options]\n\n";
 	echo "-e <exclude cpp files with this prefix> (default '$exclude')\n";
 	echo "-cpp <cpp source files> (default '$cppFile')\n";
 	echo "-obj <obj files> (default '$oFile')\n";
 	echo "-exe <main output file> (default '$mainexe')\n";
 	echo "-compiler <compiler> (default '$compiler')\n";
-	echo "-linker <compiler> (default '$linker')\n";
+	echo "-linker <linker> (default '$linker')\n";
 	echo "-stop (default '$stopOnMsg')\n";
 	echo "-makefile <file with flags, first line for compiling second for linking, next for *$cppFile folders list> (default '$flagsFile')\n";
 	
