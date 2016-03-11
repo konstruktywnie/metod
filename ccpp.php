@@ -6,6 +6,7 @@
   $cFlags = "";
   $lFlags = "";
   $compiler = "g++";
+  $linker = "g++";
   $flagsFile = "!ccpp.txt";
   $objFolders = array();
   //$objFolders[] = ".";
@@ -18,6 +19,7 @@
 	echo "-obj <obj files> (default '$oFile')\n";
 	echo "-exe <main output file> (default '$mainexe')\n";
 	echo "-compiler <compiler> (default '$compiler')\n";
+	echo "-linker <compiler> (default '$linker')\n";
 	echo "-stop (default '$stopOnMsg')\n";
 	echo "-makefile <file with flags, first line for compiling second for linking, next for *$cppFile folders list> (default '$flagsFile')\n";
 	
@@ -38,6 +40,8 @@
   if( !empty( $a[0] ) ) $lFlags = $a[0];
   $a = getCMLArgs( "-compiler", 1 );
   if( !empty( $a[0] ) ) $compiler = $a[0];
+  $a = getCMLArgs( "-linker", 1 );
+  if( !empty( $a[0] ) ) $linker = $a[0];
   $a = getCMLArgs( "-makefile", 1 );
   if( !empty( $a[0] ) ) $flagsFile = $a[0];
   $a = getCMLArgs( "-stop", 1 );
@@ -83,7 +87,7 @@
    // echo $allObj;
    // exit(0);
     if( !empty( $allObj ) ) {
-      $linkCMD = "$compiler $allObj -o $mainexe $lFlags";
+      $linkCMD = "$linker $allObj -o $mainexe $lFlags";
       $out = shell_exec( "$linkCMD 2>&1" );
       echo "$linkCMD\n";
       echo $out;
