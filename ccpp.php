@@ -9,6 +9,20 @@
   $flagsFile = "!ccpp.txt";
   $objFolders = array();
   //$objFolders[] = ".";
+  $stopOnMsg = " error: ";
+  
+  if( getCMLArgs( "-help", 1, true ) || getCMLArgs( "--help", 1, true ) || getCMLArgs( "/?", 1, true ) ) {
+    echo "Easy compiling for c++ v2.1,  usage: ccpp.exe [options]\n\n";
+	echo "-e <exclude cpp files with this prefix> (default '$exclude')\n";
+	echo "-cpp <cpp source files> (default '$cppFile')\n";
+	echo "-obj <obj files> (default '$oFile')\n";
+	echo "-exe <main output file> (default '$mainexe')\n";
+	echo "-compiler <compiler> (default '$compiler')\n";
+	echo "-stop (default '$stopOnMsg')\n";
+	echo "-makefile <file with flags, first line for compiling second for linking, next for *$cppFile folders list> (default '$flagsFile')\n";
+	
+	exit( 0 );
+  }
   
   $a = getCMLArgs( "-e", 1 );
   if( !empty( $a[0] ) ) $exclude = $a[0];
@@ -26,18 +40,10 @@
   if( !empty( $a[0] ) ) $compiler = $a[0];
   $a = getCMLArgs( "-makefile", 1 );
   if( !empty( $a[0] ) ) $flagsFile = $a[0];
+  $a = getCMLArgs( "-stop", 1 );
+  if( !empty( $a[0] ) ) $stopOnMsg = $a[0];
   
   unset($a);
-  if( getCMLArgs( "-help", 1, true ) || getCMLArgs( "--help", 1, true ) || getCMLArgs( "/?", 1, true ) ) {
-    echo "Easy compiling for c++ v2.0,  usage: ccpp.exe [options]\n\n";
-	echo "-e <exclude cpp files with this prefix> (default '$exclude')\n";
-	echo "-cpp <cpp source files> (default '$cppFile')\n";
-	echo "-obj <obj files> (default '$oFile')\n";
-	echo "-exe <main output file> (default '$mainexe')\n";
-	echo "-compiler <compiler> (default '$compiler')\n";
-	echo "-makefile <file with flags, first line for compiling second for linking, next for *$cppFile folders list> (default '$flagsFile')\n";
-	exit( 0 );
-  }
   
   $flagsFile = getcwd() . "\\" . $flagsFile;
   if( file_exists( $flagsFile ) ) {
@@ -89,6 +95,7 @@
   
 
 function makeModules( $folder ) {
+  global $stopOnMsg;
   global $cppFile;
   global $exclude;
   global $oFile;
@@ -121,11 +128,9 @@ function makeModules( $folder ) {
 	  echo "$compileCMD\n";
 	  echo $out . "\n\n";
 	
-      if( strpos( $out, ": error:" ) !== false ) {
-	  
-   	    exit(1);
-  	  }
-	  
+      if( strpos( $out, $stopOnMsg ) !== FALSE ) {
+   	    exit( 1 );
+  	  }	  
 	}
 	$allModules .= "\"$folder/$file$oFile\" ";
   }
