@@ -40,7 +40,7 @@ void theWindow::addPlane( uint8 nr ) {
 }
 void theWindow::addFilledPlane() {
   planes.resize( planes.size() + 1 );
-  planes[ planes.size() - 1 ] = _EMPTY_PLANE( planesWidth, planesHeight );
+  planes[ planes.size() - 1 ] = _CREATE_RGBA_SURFACE( planesWidth, planesHeight, 0 );
   regularPlanesNR++;
 }
 
@@ -63,8 +63,7 @@ void theWindow::redrawAllPlanes() {
 
 void theWindow::placeRectangle( uint8 planeNr, uint32 x, uint32 y, uint32 w, uint32 h, _COLOR color )
 {
-  _SURFACE* rs = _CREATE_RGBA_SURFACE( w, h );
-  _FILL_RECT( rs, NULL, color );
+  _SURFACE* rs = _CREATE_RGBA_SURFACE( w, h, color );
   _RECTANGLE offset;
   offset.x = x;
   offset.y = y;
@@ -72,7 +71,7 @@ void theWindow::placeRectangle( uint8 planeNr, uint32 x, uint32 y, uint32 w, uin
   offset.h = 0;
   _SURFACE_SET_ALPHA( rs );
   _SURFACE_BLIT( rs, NULL, planes[ planeNr ], &offset );
-  
+  _FREE_SURFACE( rs );
 }
 void theWindow::placeRectangle( uint8 planeNr, uint32 x, uint32 y, uint32 w, uint32 h, _COLOR color, uint8 border, _COLOR bColor )
 {
@@ -96,7 +95,7 @@ void theWindow::placeRectangle( uint8 planeNr, uint32 x, uint32 y, uint32 w, uin
 
 void theWindow::makeBackground( uint8 planeNr, _SURFACE* image )
 {
-  _SURFACE* destination = _EMPTY_PLANE( planesWidth, planesHeight, OPAQUE_RGBA );
+  _SURFACE* destination = _CREATE_RGBA_SURFACE( planesWidth, planesHeight, OPAQUE_RGBA );
   planes[ planeNr ] = destination;
   if( (planesWidth == image->w && planesHeight == image->h) || (planesWidth == 0 && planesHeight == 0) ) {
     _SURFACE_COPY( image, destination );
