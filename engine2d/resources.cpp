@@ -36,7 +36,7 @@ uint32 tileSet::loadFromFile( char* f, _SIZE tileWidth, _SIZE tileHeight ) {
     for( _SIZE j = 0; j < tilesCols; j++ ) {
 	  s.x = j * tileWidth;
       s.y = i * tileHeight;
-	  _SURFACE* tile = _CREATE_RGB_SURFACE( tileWidth, tileHeight );
+	  _SURFACE* tile = _CREATE_RGBA_SURFACE( tileWidth, tileHeight );
 	  _SURFACE_BLIT( image, &s, tile, &d );
 	  tiles.push_back( tile );
 	}
@@ -82,53 +82,10 @@ void tileSet::translucentToTransparent() {
     _PIXEL* pixels = (_PIXEL*)tiles[ i ]->pixels;
     for( _SIZE j = 0; j < tiles[ i ]->h; j++ ) {
 	  for( _SIZE k = 0; k < tiles[ i ]->w; k++ ) {
-	    if( (pixels[ j * tiles[ i ]->w + k ] & TRANSLUCENT_RGBA) != RGBA_MAX_CH ) {
+	    if( (pixels[ j * tiles[ i ]->w + k ] & OPAQUE_RGBA) != RGBA_MAX_CH ) {
 		  pixels[ j * tiles[ i ]->w + k ] &= TRANSPARENT_RGBA;
 		}
 	  }
 	}
   }
-}
-
-
-_SURFACE* optimizedSurface( _SURFACE* image, _SIZE w, _SIZE h ) 
-{
-  _SURFACE* destination = _EMPTY_PLANE( w, h, TRANSLUCENT_RGBA );;
-
-  if( (w == image->w && h == image->h) || (w == 0 && h == 0) ) {
-    _SURFACE_COPY( image, destination );
-  } else 
-  {
-	_RECTANGLE s, d;
-	s.x = d.x = 0;
-	s.y = d.y = 0;
-	s.w = d.w = w;
-	s.h = d.h = h;
-
-	if( image->w > w && image->h > h ) {
-      _SURFACE_BLIT( image, &s, destination, &d );
-	}
-	if( image->w < w || image->h < h ) {
-	s.w = image->w;
-	s.h = image->h;
-
-	_SIZE mw = w / image->w + 1;
-	_SIZE mh = h / image->h + 1;
-	for( _SIZE i = 0; i < mh; i++ ) {
-	  for( _SIZE j = 0; j < mw; j++ ) {
-	    _SURFACE_BLIT( image, &s, destination, &d );
-		d.x += image->w;
-	  }
-	  d.y += image->h;
-	  d.x = 0;
-	}
-
-	}
-  }
-
-/*  _SURFACE* optimized = _CONVERT_SURFACE( destination );
-  _FREE_SURFACE( destination );
-  _FREE_SURFACE( image );
-  return optimized;*/
-  return destination;
 }

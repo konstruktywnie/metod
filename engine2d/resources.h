@@ -10,8 +10,7 @@ struct tileSet
 struct appResources 
 {
   tileSet mainTileset, font;
-  _SURFACE* bGround;
+  vector<_SURFACE*> bGround;
   appResources();
 };
 
-_SURFACE* optimizedSurface( _SURFACE* s, _SIZE w, _SIZE h );
