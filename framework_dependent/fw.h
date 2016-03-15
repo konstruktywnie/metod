@@ -28,6 +28,7 @@ typedef Uint32 _SIZE;
 typedef SDL_Rect _RECTANGLE;
 
 _SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight );
+_SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight, _COLOR c );
 //_SURFACE* _CONVERT_SURFACE( _SURFACE* destination );
 inline _SURFACE* _LOAD_IMG( char* f ) {
   return IMG_Load( f );
@@ -71,14 +72,4 @@ inline void _CLEAR_SURFACE( uint32 x, uint32 y, uint32 w, uint32 h, _SURFACE* s,
   clear.w = w;
   clear.h = h;
   _FILL_RECT( s, &clear, color );
-}
-inline _SURFACE* _EMPTY_PLANE( _SIZE width, _SIZE height ) {
-  _SURFACE* s = _CREATE_RGBA_SURFACE( width, height );
-  _FILL_RECT( s, NULL, 0 );
-  return s;
-}
-inline _SURFACE* _EMPTY_PLANE( _SIZE width, _SIZE height, _COLOR fill ) {
-  _SURFACE* s = _CREATE_RGBA_SURFACE( width, height );
-  _FILL_RECT( s, NULL, fill );
-  return s;
 }
