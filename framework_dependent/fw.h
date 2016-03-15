@@ -1,7 +1,8 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_events.h>
-#include<vector>
+#include <vector>
+#include <cstdarg>
 //#include<math.h>
 //#include<cstring>
 //#include<stdio.h>
@@ -21,12 +22,12 @@ typedef Uint32 uint32;
 typedef Uint8 uint8;
 //typedef Uint32 _FLAG32;
 //typedef Uint8 _FLAG8;
-typedef uint32 _PIXEL;
-typedef uint32 _COLOR;
-typedef uint32 _SIZE;
+typedef Uint32 _PIXEL;
+typedef Uint32 _COLOR;
+typedef Uint32 _SIZE;
 typedef SDL_Rect _RECTANGLE;
 
-_SURFACE* _CREATE_RGB_SURFACE( _SIZE tileWidth, _SIZE tileHeight );
+_SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight );
 //_SURFACE* _CONVERT_SURFACE( _SURFACE* destination );
 inline _SURFACE* _LOAD_IMG( char* f ) {
   return IMG_Load( f );
@@ -50,10 +51,6 @@ inline void _SURFACE_BLIT( _SURFACE* src, _RECTANGLE* srcRect, _SURFACE* dst, _R
 inline void _SURFACE_COPY( _SURFACE* src, _SURFACE* dst ) {
   _SURFACE_BLIT( src, NULL, dst, NULL );
 }
-inline void _FILL_RECT( _SURFACE* s, _RECTANGLE* clear, _COLOR color ) {
-  SDL_FillRect( s, clear, color );
-}
-
 inline void _APPLY_SURFACE( uint32 x, uint32 y, _SURFACE* source, _SURFACE* destination ){
   _RECTANGLE offset;
   offset.x = x;
@@ -64,6 +61,9 @@ inline void _APPLY_SURFACE( uint32 x, uint32 y, _SURFACE* source, _SURFACE* dest
 inline void _FREE_SURFACE( _SURFACE* s ) {
   SDL_FreeSurface( s );
 }
+inline void _FILL_RECT( _SURFACE* s, _RECTANGLE* clear, _COLOR color ) {
+  SDL_FillRect( s, clear, color );
+}
 inline void _CLEAR_SURFACE( uint32 x, uint32 y, uint32 w, uint32 h, _SURFACE* s, _COLOR color ) {
   _RECTANGLE clear;
   clear.x = x;
@@ -73,12 +73,12 @@ inline void _CLEAR_SURFACE( uint32 x, uint32 y, uint32 w, uint32 h, _SURFACE* s,
   _FILL_RECT( s, &clear, color );
 }
 inline _SURFACE* _EMPTY_PLANE( _SIZE width, _SIZE height ) {
-  _SURFACE* s = _CREATE_RGB_SURFACE( width, height );
+  _SURFACE* s = _CREATE_RGBA_SURFACE( width, height );
   _FILL_RECT( s, NULL, 0 );
   return s;
 }
 inline _SURFACE* _EMPTY_PLANE( _SIZE width, _SIZE height, _COLOR fill ) {
-  _SURFACE* s = _CREATE_RGB_SURFACE( width, height );
+  _SURFACE* s = _CREATE_RGBA_SURFACE( width, height );
   _FILL_RECT( s, NULL, fill );
   return s;
 }
