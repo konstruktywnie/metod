@@ -2,7 +2,7 @@
 #include "resources.h"
 #include "../config.h"
 
-uint32 tileSet::loadFromFile( char* f, _SIZE tileWidth, _SIZE tileHeight ) {
+_SIZE tileSet::loadFromFile( char* f, _SIZE tileWidth, _SIZE tileHeight ) {
   _SURFACE* image;
   image = _LOAD_IMG( f );
   if( !f || image == NULL ) {
@@ -46,7 +46,7 @@ uint32 tileSet::loadFromFile( char* f, _SIZE tileWidth, _SIZE tileHeight ) {
   return tiles.size();
 }
 
-void tileSet::changeColor( _COLOR search, _COLOR changeTo, uint32 i ) {
+void tileSet::changeColor( _COLOR search, _COLOR changeTo, _INDEX i ) {
   _PIXEL* pixels = (_PIXEL*)tiles[ i ]->pixels;
     for( _SIZE j = 0; j < tiles[ i ]->h; j++ ) {
 	  for( _SIZE k = 0; k < tiles[ i ]->w; k++ ) {
@@ -57,15 +57,15 @@ void tileSet::changeColor( _COLOR search, _COLOR changeTo, uint32 i ) {
 }
 
 void tileSet::changeColor( _COLOR search, _COLOR changeTo ) {
-  uint32 ts = tiles.size();
-  for( int i = 0; i < ts; i++ ) {
+  _INDEX ts = tiles.size();
+  for( _INDEX i = 0; i < ts; i++ ) {
     changeColor( search, changeTo, i );
   }
 }
 
 void tileSet::changeColorAtAlpha( _COLOR changeTo ) {
-  uint32 ts = tiles.size();
-  for( int i = 0; i < ts; i++ ) {
+  _INDEX ts = tiles.size();
+  for( _INDEX i = 0; i < ts; i++ ) {
     _PIXEL* pixels = (_PIXEL*)tiles[ i ]->pixels;
     for( _SIZE j = 0; j < tiles[ i ]->h; j++ ) {
 	  for( _SIZE k = 0; k < tiles[ i ]->w; k++ ) {
@@ -77,8 +77,8 @@ void tileSet::changeColorAtAlpha( _COLOR changeTo ) {
 }
 
 void tileSet::translucentToTransparent() {
-  uint32 ts = tiles.size();
-  for( int i = 0; i < ts; i++ ) {
+  _INDEX ts = tiles.size();
+  for( _INDEX i = 0; i < ts; i++ ) {
     _PIXEL* pixels = (_PIXEL*)tiles[ i ]->pixels;
     for( _SIZE j = 0; j < tiles[ i ]->h; j++ ) {
 	  for( _SIZE k = 0; k < tiles[ i ]->w; k++ ) {
