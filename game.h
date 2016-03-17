@@ -1,7 +1,7 @@
 
 struct theGame {
   theScreen* screens;
-  uint8 actualScr;
+  _INDEX actualScr;
   theLevel* lvl;
   appResources* res;
   
