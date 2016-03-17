@@ -6,7 +6,7 @@ uint32 tileSet::loadFromFile( char* f, _SIZE tileWidth, _SIZE tileHeight ) {
   _SURFACE* image;
   image = _LOAD_IMG( f );
   if( !f || image == NULL ) {
-    printf( "Error: Can not load image: %s\n", f );
+    fprintf( stderr, "Error: Can not load image: %s\n", f );
     exit( 1 );
   }
   _SURFACE_SET_ZALPHA( image );
