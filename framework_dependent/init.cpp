@@ -10,7 +10,7 @@ void _FRAMEWORK_INIT() {
   SDL_WM_SetCaption( TITLE_TEXT, NULL );
   SDL_ShowCursor( SDL_DISABLE );
 
-  for ( int i = 0; i < SDL_NUMEVENTS; i++ )
+  for ( _INDEX i = 0; i < SDL_NUMEVENTS; i++ )
     if ( i != SDL_USEREVENT && i != SDL_KEYDOWN && i != SDL_QUIT )
       SDL_EventState( i, SDL_IGNORE );
 }

@@ -22,9 +22,11 @@ typedef Uint32 uint32;
 typedef Uint8 uint8;
 //typedef Uint32 _FLAG32;
 //typedef Uint8 _FLAG8;
-typedef Uint32 _PIXEL;
-typedef Uint32 _COLOR;
-typedef Uint32 _SIZE;
+typedef uint32 _PIXEL;
+typedef uint32 _COLOR;
+typedef uint32 _SIZE;
+typedef uint32 _POS;
+typedef uint32 _INDEX;
 typedef SDL_Rect _RECTANGLE;
 
 _SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight );
@@ -36,7 +38,7 @@ inline _SURFACE* _LOAD_IMG( char* f ) {
 /*inline _PIXEL_FORMAT* _GET_PIXEL_FORMAT( _SURFACE* s ) {
   return s->format;
 }*/
-inline void _UPDATE_SURFACE( _SURFACE* s, uint32 x, uint32 y, uint32 w, uint32 h ) {
+inline void _UPDATE_SURFACE( _SURFACE* s, _POS x, _POS y, _SIZE w, _SIZE h ) {
   SDL_UpdateRect( s, x, y, w, h );
 }
 inline void _SURFACE_SET_ALPHA( _SURFACE* s ) {
@@ -52,7 +54,7 @@ inline void _SURFACE_BLIT( _SURFACE* src, _RECTANGLE* srcRect, _SURFACE* dst, _R
 inline void _SURFACE_COPY( _SURFACE* src, _SURFACE* dst ) {
   _SURFACE_BLIT( src, NULL, dst, NULL );
 }
-inline void _APPLY_SURFACE( uint32 x, uint32 y, _SURFACE* source, _SURFACE* destination ){
+inline void _APPLY_SURFACE( _POS x, _POS y, _SURFACE* source, _SURFACE* destination ){
   _RECTANGLE offset;
   offset.x = x;
   offset.y = y;
@@ -64,12 +66,4 @@ inline void _FREE_SURFACE( _SURFACE* s ) {
 }
 inline void _FILL_RECT( _SURFACE* s, _RECTANGLE* clear, _COLOR color ) {
   SDL_FillRect( s, clear, color );
-}
-inline void _CLEAR_SURFACE( uint32 x, uint32 y, uint32 w, uint32 h, _SURFACE* s, _COLOR color ) {
-  _RECTANGLE clear;
-  clear.x = x;
-  clear.y = y;
-  clear.w = w;
-  clear.h = h;
-  _FILL_RECT( s, &clear, color );
 }
