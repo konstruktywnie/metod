@@ -32,7 +32,13 @@ theGame::theGame() {
 
 extern theGame Game;
 void initGame() {
+
+ //fprintf( stderr, "\e[2J  \e[48;2;25;255;255m test \e[0m \e[3;1f \e[31m test2 \e[0m\n" );
+
+
   Game.screens[ SCREEN_MENU ].windows[ 0 ]->redrawAllPlanes();
   //Game.screens[ SCREEN_MENU ].windows[ 0 ]->addPlaneMatrix( 50, 50 );
-  Game.screens[ SCREEN_MENU ].windows[ 0 ]->makeBackgroundMatrix( Game.res->bGround[ BGR_MENU ], 40, 40 );
+  Game.screens[ SCREEN_MENU ].windows[ 0 ]->makeBackgroundMatrix( Game.res->bGround[ BGR_MENU ], Game.res->bGround[ BGR_MENU ]->w, Game.res->bGround[ BGR_MENU ]->h );
+  //Game.screens[ SCREEN_MENU ].windows[ 0 ]->print_vo_sizes( 0 );
+    
 }
