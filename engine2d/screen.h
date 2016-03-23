@@ -17,9 +17,8 @@ struct theWindow {
   vector<_SURFACE*> planes;
   vector<sectorsMatrix> pMat;
   vector< vector<visObj*> > vObjs;
-  vector<secSize> sectorSizes;
-  _SIZE winWidth, winHeight, planesWidth, planesHeight;
-  _POS winPosX, winPosY, bgPosX, bgPosY, marginX, marginY;
+  _SIZE winWidth, winHeight, planesWidth, planesHeight, sectorWidth, sectorHeight;
+  _POS winPosX, winPosY, bgPosX, bgPosY;
   
   theWindow();
   void addPlane( _INDEX nr );
@@ -32,10 +31,12 @@ struct theWindow {
   void placeRectangle( _SURFACE* d, _POS x, _POS y, _SIZE w, _SIZE h, _COLOR color, _SIZE bw, _COLOR bColor );
   
   void addPlaneMatrix( _SIZE sectorWidth, _SIZE sectorHeight );
+  void addPlaneMatrix();
   void makeBackgroundMatrix( _SURFACE* image, _SIZE sw, _SIZE sh );
   void redrawMatrix( _INDEX i, _POS x, _POS y, _SIZE w, _SIZE h );
  // void redrawMatrixesvObjs();
   void putOnMatrix( _INDEX i, _SURFACE* s, _POS posx, _POS posy );
+  void print_vo_sizes( _INDEX index );
   void prepareMatrixToDraw( _INDEX i, _POS x, _POS y, _SIZE w, _SIZE h );
  // void checkMatrixOpacity( _SIZE index );
 };

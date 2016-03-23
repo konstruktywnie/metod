@@ -152,19 +152,20 @@ _SIZE theWindow::print( tileSet* font, _SURFACE* destination, _POS x, _POS y, co
 
 void theWindow::addPlaneMatrix( _SIZE secWidth, _SIZE secHeight )
 {
-  _SIZE cols = planesWidth / secWidth + (( planesWidth % secWidth > 0 )? 1 : 0);
-  _SIZE rows = planesHeight / secHeight + (( planesHeight % secHeight > 0 )? 1 : 0);
+  sectorWidth = secWidth;
+  sectorHeight = secHeight;
+  addPlaneMatrix();
+}
+void theWindow::addPlaneMatrix() {
+  _SIZE cols = planesWidth / sectorWidth + (( planesWidth % sectorWidth > 0 )? 1 : 0);
+  _SIZE rows = planesHeight / sectorHeight + (( planesHeight % sectorHeight > 0 )? 1 : 0);
 
   pMat.resize( pMat.size() + 1 );
   _SIZE mI = pMat.size() - 1;
   pMat[ mI ].resize( rows );
   for( _SIZE i = 0; i < rows; i++ )
     pMat[ mI ][ i ].resize( cols );
-  sectorSizes.resize( sectorSizes.size() + 1 );	
-  sectorSizes[ sectorSizes.size() - 1 ].w = secWidth;
-  sectorSizes[ sectorSizes.size() - 1 ].h = secHeight;
 }
-
 void theWindow::makeBackgroundMatrix( _SURFACE* image, _SIZE sw, _SIZE sh ) 
 {
   addPlaneMatrix( sw, sh );
@@ -185,36 +186,47 @@ void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
 {
   _SIZE rows = pMat[ index ].size();
   _SIZE cols = pMat[ index ][ 0 ].size();
-  _SIZE secWidth = sectorSizes[ index ].w;
-  _SIZE secHeight = sectorSizes[ index ].h;
-  _SIZE surfCols = s->w / secWidth + (( s->w % secWidth > 0 )? 1 : 0);
-  _SIZE surfRows = s->h / secHeight + (( s->h % secHeight > 0 )? 1 : 0);
-  _SIZE col = posx / secWidth + (( posx % secWidth > 0 )? 1 : 0);
-  _SIZE row = posy / secHeight + (( posy % secHeight > 0 )? 1 : 0);
-  if( row > rows || col > cols ) return;
-  if( row > 0 ) row--;
-  if( col > 0 ) col--;
+  _SIZE col = posx / sectorWidth;
+  _SIZE row = posy / sectorHeight;
 
   visObj* vObj = new visObj;
   vObj->x = posx; 
   vObj->y = posy; 
   vObj->s = s; 
-  for( _SIZE i = 0; i < surfRows && (row + i < rows); i++ )
-  {
-    for( _SIZE j = 0; j < surfCols && (col + j < cols); j++ )
-	{
-      _SIZE lastO = pMat[ index ][ row + i ][ col + j ].vo.size();
+  for( _SIZE secEndPosY = sectorHeight * row, i = 0; secEndPosY < posy + s->h  && (row + i < rows); secEndPosY += sectorHeight, i++ ) {
+    for( _SIZE secEndPosX = sectorWidth * col, j = 0; secEndPosX < posx + s->w && (col + j < cols); secEndPosX += sectorWidth, j++ ) {
+	  _SIZE lastO = pMat[ index ][ row + i ][ col + j ].vo.size();
       pMat[ index ][ row + i ][ col + j ].vo.resize( lastO + 1 );
       pMat[ index ][ row + i ][ col + j ].vo[ lastO ] = vObj;
 	}
-	
   }
-//fprintf( stderr, "[%i %i; %i %i; %i %i]\n\n", surfRows, surfCols, (int)row, (int)col, (int)rows, (int)cols );
 
 }
+void theWindow::print_vo_sizes( _INDEX index ) {
+  for( _SIZE i = 0; i < pMat[ 0 ].size(); i++ ) {
+    for( _SIZE j = 0; j < pMat[ 0 ][ 0 ].size(); j++ )
+	  printf( "%i ", pMat[ 0 ][ i ][ j ].vo.size() );
+    printf( "\n" );
+  }
+}
 
-void theWindow::prepareMatrixToDraw( _INDEX i, _POS x, _POS y, _SIZE w, _SIZE h ) 
+void theWindow::prepareMatrixToDraw( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h ) 
 {
+  _SIZE rows = pMat[ index ].size();
+  _SIZE cols = pMat[ index ][ 0 ].size();
+  _SIZE col = x / sectorWidth;
+  _SIZE row = y / sectorHeight;
+  _SIZE colL = w / sectorWidth + ( w % sectorWidth )? 1 : 0;
+  _SIZE rowL = h / sectorHeight + ( h % sectorHeight )? 1 : 0;
+  if( col + colL > cols ) colL = cols - col;
+  if( row + rowL > rows ) rowL = rows - row;
+  for( _SIZE i = 0; i < rowL; i++ ) 
+    for( _SIZE j = 0; j < colL; j++ )
+	{
+	  _SIZE vos = pMat[ index ][ i ][ j ].vo.size();
+	  for( _SIZE k = 0; k < vos; k++ )
+	    pMat[ index ][ i ][ j ].vo[ k ]->drawed = false;
+	}
 }
 
 void theWindow::redrawMatrix( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h )
