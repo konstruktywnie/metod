@@ -5,7 +5,6 @@
 #include "../level.h"
 #include "../game.h"
 
-extern _SURFACE* MainScreen;
 extern theGame Game;
 
 theScreen::theScreen() {
@@ -23,9 +22,9 @@ void theScreen::addWindow() {
 }
 
 theWindow::theWindow() {
-  winWidth = planesWidth = theScreen::scrWidth;
-  winHeight = planesHeight = theScreen::scrHeight;
-  winPosX = winPosY = bgPosX = bgPosY = 0;
+  winRec.w = planesWidth = theScreen::scrWidth;
+  winRec.h = planesHeight = theScreen::scrHeight;
+  winRec.x = winRec.y = bgPosX = bgPosY = 0;
 }
 void theWindow::addPlane() {
   planes.resize( planes.size() + 1 );
@@ -40,20 +39,17 @@ void theWindow::addFilledPlane() {
 
 void theWindow::redrawAllPlanes() {
   _RECTANGLE s;
-  s.w = winWidth;
-  s.h = winHeight;
+  s.w = winRec.w;
+  s.h = winRec.h;
   s.x = bgPosX;
   s.y = bgPosY;
-  _RECTANGLE d;
-  d.w = winWidth;
-  d.h = winHeight;
-  d.x = winPosX;
-  d.y = winPosY;
+
   _SIZE allP = planes.size();
   for( _SIZE i = 0; i < allP; i++ ) {
-    _SURFACE_BLIT( planes[ i ], &s, MainScreen, &d );
+	_APPLY_ON_DISPLAY( planes[ i ], &s, &winRec );
+	
   }
-  _UPDATE_SURFACE( MainScreen, d.x, d.y, d.w, d.h );
+  _UPDATE_DISPLAY( &winRec );
 }
 
 void theWindow::placeRectangle( _SURFACE* d, _POS x, _POS y, _SIZE w, _SIZE h, _COLOR color )
@@ -64,7 +60,7 @@ void theWindow::placeRectangle( _SURFACE* d, _POS x, _POS y, _SIZE w, _SIZE h, _
   offset.y = y;
   offset.w = 0;
   offset.h = 0;
-  _SURFACE_SET_ALPHA( rs );
+ // _SURFACE_SET_ALPHA( rs );
   _SURFACE_BLIT( rs, NULL, d, &offset );
   _FREE_SURFACE( rs );
 }
@@ -165,6 +161,9 @@ void theWindow::addPlaneMatrix() {
   pMat[ mI ].resize( rows );
   for( _SIZE i = 0; i < rows; i++ )
     pMat[ mI ][ i ].resize( cols );
+  
+  vObjs.resize( vObjs.size() + 1 );
+  
 }
 void theWindow::makeBackgroundMatrix( _SURFACE* image, _SIZE sw, _SIZE sh ) 
 {
@@ -188,7 +187,7 @@ void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
   _SIZE cols = pMat[ index ][ 0 ].size();
   _SIZE col = posx / sectorWidth;
   _SIZE row = posy / sectorHeight;
-
+  
   visObj* vObj = new visObj;
   vObj->x = posx; 
   vObj->y = posy; 
@@ -198,6 +197,7 @@ void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
 	  _SIZE lastO = pMat[ index ][ row + i ][ col + j ].vo.size();
       pMat[ index ][ row + i ][ col + j ].vo.resize( lastO + 1 );
       pMat[ index ][ row + i ][ col + j ].vo[ lastO ] = vObj;
+	  
 	}
   }
 
@@ -220,6 +220,7 @@ void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZ
   if( col + colL > cols ) colL = cols - col;
   if( row + rowL > rows ) rowL = rows - row;
 }
+/*
 void theWindow::prepareMatrixToDraw( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h ) 
 {
   _SIZE col, row, colL, rowL;
@@ -227,39 +228,68 @@ void theWindow::prepareMatrixToDraw( _INDEX index, _POS x, _POS y, _SIZE w, _SIZ
   for( _SIZE i = 0; i < rowL; i++ ) 
     for( _SIZE j = 0; j < colL; j++ )
 	{
-	  _SIZE vos = pMat[ index ][ i ][ j ].vo.size();
+	  _SIZE vos = pMat[ index ][ row + i ][ col + j ].vo.size();
 	  for( _SIZE k = 0; k < vos; k++ )
-	    pMat[ index ][ i ][ j ].vo[ k ]->drawed = false;
+	    pMat[ index ][ row + i ][ col + j ].vo[ k ]->drawed = false;
+	}
+}*/
+void theWindow::prepareMatrixToDraw( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _SIZE colL ) 
+{
+  for( _SIZE i = 0; i < rowL; i++ ) 
+    for( _SIZE j = 0; j < colL; j++ )
+	{
+	  _SIZE vos = pMat[ index ][ row + i ][ col + j ].vo.size();
+	  for( _SIZE k = 0; k < vos; k++ )
+	    pMat[ index ][ row + i ][ col + j ].vo[ k ]->drawed = false;
 	}
 }
 
 bool theWindow::visibleInWindow( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS& vis_fx, _POS& vis_fy, _SIZE& vis_fw, _SIZE& vis_fh )
 {
+//  if( fw > winRec.w ) fw = winRec.w;
+//  if( fh > winRec.h ) fh = winRec.h;
+  
   _POS end_fx = fx + fw;
   _POS end_fy = fy + fh;
+  _POS end_winx = bgPosX + winRec.w;
+  _POS end_winy = bgPosY + winRec.h;
+  
   vis_fx = fx;
   vis_fy = fy;
   vis_fw = fw;
   vis_fh = fh;
-  if( end_fx > bgPosX && fx < bgPosX + winWidth && end_fy > bgPosY  && fy < bgPosY + winHeight )
+  
+  if( end_fx > bgPosX && fx < end_winx && end_fy > bgPosY  && fy < end_winy )
   {
     if( end_fx > bgPosX && fx < bgPosX )
 	{
 	  vis_fx = bgPosX;
-	  vis_fw -= bgPosX - fx;
+	  vis_fw = fw - (bgPosX - fx);
 	}
-	if( end_fx > bgPosX + winWidth && fx < bgPosX + winWidth ) {
+	if( end_fx > bgPosX + winRec.w && fx < end_winx ) {
 	  vis_fx = fx;
-	  vis_fw -= end_fx - (bgPosX + winWidth);
+	  vis_fw = fw - (end_fx - end_winx);
 	}
+	if( fx < bgPosX && end_fx > end_winx )
+	{
+	  vis_fx = bgPosX;
+	  vis_fw = end_winx - bgPosX;
+	}
+	
     if( end_fy > bgPosY && fy < bgPosY ) {
 	  vis_fy = bgPosY;
-	  vis_fh -= bgPosY - fy;
+	  vis_fh = fh - (bgPosY - fy);
 	}
-	if( end_fy > bgPosY + winHeight && fy < bgPosY + winHeight ) {
+	if( end_fy > end_winy && fy < end_winy ) {
 	  vis_fy = fy;
-	  vis_fh -= end_fy - (bgPosY + winHeight);
+	  vis_fh = fh - (end_fy - end_winy);
 	}
+	if( fy < bgPosY && end_fy > end_winy )
+	{
+	  vis_fy = bgPosY;
+	  vis_fh = end_winy - bgPosY;
+	}
+	
 	return true;
   }
   return false;
@@ -270,8 +300,8 @@ bool theWindow::visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS sx, _PO
   _POS end_fy = fy + fh;
   _POS end_sx = sx + sw;
   _POS end_sy = sy + sh;
-  vis_sx = sx;
-  vis_sy = sy;
+  vis_sx = 0;
+  vis_sy = 0;
   vis_sw = sw;
   vis_sh = sh;
   
@@ -280,29 +310,29 @@ bool theWindow::visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS sx, _PO
     	
 	if( end_sx > fx && sx < fx )
 	{
-	  vis_sx = fx;
-	  vis_sw -= fx - sx;
+	  vis_sx = fx - sx;
+	  vis_sw = sw - vis_sx;
 	}
 	if( end_sx > end_fx && sx < end_fx ) {
-	  vis_sx = sx;
-	  vis_sw -= end_sx - end_fx;
+	  vis_sx = 0;
+	  vis_sw = sw - (end_sx - end_fx);
 	}
 	if( end_sx > end_fx && sx < fx ) {
-	  vis_sx = fx;
+	  vis_sx = fx - sx;
 	  vis_sw = fw;
 	}
 	
 	if( end_sy > fy && sy < fy )
 	{
-	  vis_sy = fy;
-	  vis_sh -= fy - sy;
+	  vis_sy = fy - sy;
+	  vis_sh = sh - vis_sy;
 	}
 	if( end_sy > end_fy && sy < end_fy ) {
-	  vis_sy = sy;
-	  vis_sh -= end_sy - end_fy;
+	  vis_sy = 0;
+	  vis_sh = sh - (end_sy - end_fy);
 	}
 	if( end_sy > end_fy && sy < fy ) {
-	  vis_sy = fy;
+	  vis_sy = fy - sy;
 	  vis_sh = fh;
 	}
     
@@ -310,16 +340,38 @@ bool theWindow::visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS sx, _PO
   }
   return false;
 }
-
-void theWindow::redrawMatrix( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h )
+void theWindow::redrawWindow() {
+  redrawField( bgPosX, bgPosY, winRec.w, winRec.h );
+}
+void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
 {
+  _SIZE matS = pMat.size();
   _POS visFX, visFY;
   _SIZE visFW, visFH;
   if( visibleInWindow( x, y, w, h, visFX, visFY, visFW, visFH ) )
   {
+    _SIZE col, row, colL, rowL;
+    onMatrixCoordinates( 0, x, y, w, h, col, row, rowL, colL );
+    for( _SIZE i = 0; i < matS; i++ ) 
+	{
+	  prepareMatrixToDraw( i, row, col, rowL, colL );
+	  redrawMatrix( i, row, col, rowL, colL, visFX, visFY, visFW, visFH );
+	}
+  }
+  _RECTANGLE r;
+  r.x = winRec.x;
+  r.y = winRec.y;
+  r.w = visFW;
+  r.h = visFH;
+  _UPDATE_DISPLAY( &r );
+}
+
+void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _SIZE colL, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
+{
+  _POS visX, visY;
+  _SIZE visW, visH;
+  _RECTANGLE s, d;
   
-  _SIZE col, row, colL, rowL;
-  onMatrixCoordinates( index, x, y, w, h, col, row, rowL, colL );
   for( _SIZE i = 0; i < rowL; i++ ) 
   {
     for( _SIZE j = 0; j < colL; j++ )
@@ -328,19 +380,40 @@ void theWindow::redrawMatrix( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h )
 	  for( _SIZE k = 0; k < vos; k++ )
 	  {
 	    visObj* vObj = pMat[ index ][ i ][ j ].vo[ k ];
-		_POS visX, visY;
-		_SIZE visW, visH;
 	    //fprintf( stderr, " (vObj->x)%i (vObj->y)%i (vObj->s->w)%i (vObj->s->h)%i\n", vObj->x, vObj->y, vObj->s->w, vObj->s->h );
 		
-		if( visibleField( visFX, visFY, visFW, visFH, vObj->x, vObj->y, vObj->s->w, vObj->s->h, visX, visY, visW, visH ) )
+		if( !vObj->drawed && visibleField( visFX, visFY, visFW, visFH, vObj->x, vObj->y, vObj->s->w, vObj->s->h, visX, visY, visW, visH ) )
 		{
-		  fprintf( stderr, " (visFX)%i (visFY)%i (visFW)%i (visFH)%i (vObj->x)%i (vObj->y)%i (vObj->s->w)%i (vObj->s->h)%i (visX)%i (visY)%i (visW)%i (visH)%i\n", visFX, visFY, visFW, visFH, vObj->x, vObj->y, vObj->s->w, vObj->s->h, visX, visY, visW, visH );
-		  
+		  //fprintf( stderr, " (visX)%i (visY)%i (visW)%i (visH)%i\n", visX, visY, visW, visH );
+		  s.x = visX;
+		  s.y = visY;
+		  s.w = visW;
+		  s.h = visH;
+		  d.x = winRec.x + vObj->x + visX - bgPosX;
+		  d.y = winRec.y + vObj->y + visY - bgPosY;
+		  d.w = visW;
+		  d.h = visH;
+		  _APPLY_ON_DISPLAY( vObj->s, &s, &d );
+		  vObj->drawed = true;
 		}
-		vObj->drawed = false;
+		
 	  }
 	}
   }
   
+}
+
+void theWindow::redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
+{
+  _POS visX, visY;
+  _SIZE visW, visH;
+  _SIZE voS = vObjs[ index ].size();
+  for(_SIZE i = 0; i < voS; i++ )
+  {
+    if( !vObjs[ index ][ i ]->drawed && visibleField( visFX, visFY, visFW, visFH, !vObjs[ index ][ i ]->x, !vObjs[ index ][ i ]->y, !vObjs[ index ][ i ]->s->w, !vObjs[ index ][ i ]->s->h, visX, visY, visW, visH ) )
+	{
+	  vObjs[ index ][ i ]->drawed = true;
+	}
   }
 }
+  
