@@ -13,8 +13,8 @@ theScreen::theScreen() {
 }
 void theScreen::addWindow( _INDEX nr ) {
   windows.resize( windows.size() + nr );
-  while( nr > 0 ) 
-    windows[ windows.size() - nr-- ] = new theWindow;
+  for( _INDEX i = 0; i < nr; i++ ) 
+    windows[ i ] = new theWindow;
   
 }
 void theScreen::addWindow() {
