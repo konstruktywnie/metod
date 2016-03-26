@@ -225,8 +225,8 @@ void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZ
   _SIZE cols = pMat[ index ][ 0 ].size();
   col = x / sectorWidth;
   row = y / sectorHeight;
-  colL = w / sectorWidth + (( w % sectorWidth )? 1 : 0);
-  rowL = h / sectorHeight + (( h % sectorHeight )? 1 : 0);
+  colL = w / sectorWidth + (( w % sectorWidth )? 1 : 0) + 1;
+  rowL = h / sectorHeight + (( h % sectorHeight )? 1 : 0) + 1;
   if( col + colL > cols ) colL = cols - col;
   if( row + rowL > rows ) rowL = rows - row;
 }
@@ -358,6 +358,8 @@ void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
   _SIZE matS = pMat.size();
   _POS visFX, visFY;
   _SIZE visFW, visFH;
+  _RECTANGLE r;
+    
   if( visibleInWindow( x, y, w, h, visFX, visFY, visFW, visFH ) )
   {
     _SIZE col, row, colL, rowL;
@@ -368,13 +370,13 @@ void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
 	  redrawMatrix( i, row, col, rowL, colL, visFX, visFY, visFW, visFH );
 	  redrawVObjs( i, visFX, visFY, visFW, visFH );
 	}
+    r.x = winRec.x + visFX - bgPosX;
+    r.y = winRec.y + visFY - bgPosY;
+    r.w = visFW;
+    r.h = visFH;
+    _UPDATE_DISPLAY( &r );
   }
-  _RECTANGLE r;
-  r.x = winRec.x;
-  r.y = winRec.y;
-  r.w = visFW;
-  r.h = visFH;
-  _UPDATE_DISPLAY( &r );
+  
 }
 
 void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _SIZE colL, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
