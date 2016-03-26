@@ -197,26 +197,29 @@ void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
   _SIZE cols = pMat[ index ][ 0 ].size();
   _SIZE col = posx / sectorWidth;
   _SIZE row = posy / sectorHeight;
+  _SIZE colEnd = (posx + s->w) / sectorWidth;
+  _SIZE rowEnd = (posy + s->h) / sectorHeight;
+  if( colEnd > cols ) colEnd = cols;
+  if( rowEnd > rows ) rowEnd = rows;
   
   visObj* vObj = new visObj;
   vObj->x = posx; 
   vObj->y = posy; 
   vObj->s = s; 
-  for( _SIZE secEndPosY = sectorHeight * row, i = 0; secEndPosY < posy + s->h  && (row + i < rows); secEndPosY += sectorHeight, i++ ) {
-    for( _SIZE secEndPosX = sectorWidth * col, j = 0; secEndPosX < posx + s->w && (col + j < cols); secEndPosX += sectorWidth, j++ ) {
-	  _SIZE lastO = pMat[ index ][ row + i ][ col + j ].vo.size();
-      pMat[ index ][ row + i ][ col + j ].vo.resize( lastO + 1 );
-      pMat[ index ][ row + i ][ col + j ].vo[ lastO ] = vObj;
-	  
+  _SIZE lastO;
+  for( ;row < rowEnd; row++ )
+    for( ;col < colEnd; col++ )
+	{
+	  lastO = pMat[ index ][ row ][ col ].vo.size();
+      pMat[ index ][ row ][ col ].vo.resize( lastO + 1 );
+      pMat[ index ][ row ][ col ].vo[ lastO ] = vObj;
 	}
-  }
-
 }
 void theWindow::print_vo_sizes( _INDEX index ) {
   for( _SIZE i = 0; i < pMat[ 0 ].size(); i++ ) {
     for( _SIZE j = 0; j < pMat[ 0 ][ 0 ].size(); j++ )
-	  printf( "%i ", pMat[ 0 ][ i ][ j ].vo.size() );
-    printf( "\n" );
+	  fprintf( stderr, "%i ", pMat[ 0 ][ i ][ j ].vo.size() );
+    fprintf( stderr, "\n" );
   }
 }
 void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h, _SIZE& row, _SIZE& col, _SIZE& rowL, _SIZE& colL )
@@ -225,8 +228,8 @@ void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZ
   _SIZE cols = pMat[ index ][ 0 ].size();
   col = x / sectorWidth;
   row = y / sectorHeight;
-  colL = w / sectorWidth + (( w % sectorWidth )? 1 : 0) + 1;
-  rowL = h / sectorHeight + (( h % sectorHeight )? 1 : 0) + 1;
+  colL = (x + w) / sectorWidth - col + 1;
+  rowL = (y + h) / sectorHeight - row + 1;
   if( col + colL > cols ) colL = cols - col;
   if( row + rowL > rows ) rowL = rows - row;
 }
@@ -393,11 +396,9 @@ void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _S
 	  for( _SIZE k = 0; k < vos; k++ )
 	  {
 	    visObj* vObj = pMat[ index ][ i ][ j ].vo[ k ];
-	    //fprintf( stderr, " (vObj->x)%i (vObj->y)%i (vObj->s->w)%i (vObj->s->h)%i\n", vObj->x, vObj->y, vObj->s->w, vObj->s->h );
 		
 		if( !vObj->drawed && visibleField( visFX, visFY, visFW, visFH, vObj->x, vObj->y, vObj->s->w, vObj->s->h, visX, visY, visW, visH ) )
 		{
-		  //fprintf( stderr, " (visX)%i (visY)%i (visW)%i (visH)%i\n", visX, visY, visW, visH );
 		  s.x = visX;
 		  s.y = visY;
 		  s.w = visW;
