@@ -46,7 +46,7 @@ struct theWindow {
   bool visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS sx, _POS sy, _POS sw, _POS sh, _POS& vis_sx, _POS& vis_sy, _SIZE& vis_sw, _SIZE& vis_sh );
   void redrawField( _POS x, _POS y, _SIZE w, _SIZE h );
   void redraw();
-  void newVObj( _INDEX r, _INDEX c, _SURFACE* s, _POS x, _POS y );
+  void newVObj( _INDEX p, _INDEX i, _SURFACE* s, _POS x, _POS y );
   // void checkMatrixOpacity( _SIZE index );
 };
 

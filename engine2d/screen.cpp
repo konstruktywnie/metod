@@ -413,12 +413,16 @@ void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _S
   }
   
 }
-void theWindow::newVObj( _INDEX r, _INDEX c, _SURFACE* s, _POS x, _POS y )
+void theWindow::newVObj( _INDEX p, _INDEX i, _SURFACE* s, _POS x, _POS y )
 {
-  vObjs[ r ][ c ] = new visObj;
-  vObjs[ r ][ c ]->s = s;
-  vObjs[ r ][ c ]->x = x;
-  vObjs[ r ][ c ]->y = y;
+  if( vObjs[ p ].empty() )
+    vObjs[ p ].resize( 1 );
+  if( i > (vObjs[ p ].size() - 1) )
+    vObjs[ p ].resize( i + 1 );
+  vObjs[ p ][ i ] = new visObj;
+  vObjs[ p ][ i ]->s = s;
+  vObjs[ p ][ i ]->x = x;
+  vObjs[ p ][ i ]->y = y;
 }
 void theWindow::redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
 {
