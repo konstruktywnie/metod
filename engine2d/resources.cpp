@@ -10,6 +10,7 @@ _SIZE tileSet::loadFromFile( char* f, _SIZE tileWidth, _SIZE tileHeight ) {
     exit( 1 );
   }
   _SURFACE_SET_ZALPHA( image );
+  //_SURFACE_SET_ALPHA( image );
 
   if( tileWidth == 0 && tileHeight == 0 ) {  //working out square tile size in case of elongated mosaic
     if( image->w >= image->h )
