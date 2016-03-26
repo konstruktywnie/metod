@@ -29,9 +29,22 @@ typedef uint32 _POS;
 typedef uint32 _INDEX;
 typedef SDL_Rect _RECTANGLE;
 
+extern _SURFACE* MainScreen;
+
 _SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight );
 _SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight, _COLOR c );
 //_SURFACE* _CONVERT_SURFACE( _SURFACE* destination );
+inline void _APPLY_ON_DISPLAY( _SURFACE* source, _RECTANGLE* s, _RECTANGLE* d )
+{
+  //SDL_SetAlpha( source, SDL_SRCALPHA, SDL_ALPHA_OPAQUE );
+  SDL_BlitSurface( source, s, MainScreen, d );
+
+}
+inline void _UPDATE_DISPLAY( _RECTANGLE* r )
+{
+  SDL_UpdateRect( MainScreen, r->x, r->y, r->w, r->h );
+}
+
 inline _SURFACE* _LOAD_IMG( char* f ) {
   return IMG_Load( f );
 }
