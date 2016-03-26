@@ -9,6 +9,6 @@ _SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight ) {
 _SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight, _COLOR c ) {
   _SURFACE* s = _CREATE_RGBA_SURFACE( tileWidth, tileHeight );
   _FILL_RECT( s, NULL, c );
-  //_SURFACE_SET_ALPHA( s );
+  
   return s;
 }
