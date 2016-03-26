@@ -40,13 +40,18 @@ void theGame::buildMenu()
   menuW->print( &res->font, txtChoose, 0, 0, MENU_CHOOSE_LEVEL_TXT );
   menuW->print( &res->font, txtExit, 0, 0, MENU_EXIT_TXT );
 
-  menuW->vObjs[ 0 ].resize( 4 );
   menuW->newVObj( 0, 0, mTitle, TITLE_TEXT_POSX, TITLE_TEXT_POSY );
   menuW->newVObj( 0, 1, mMain, MENU_POSX, MENU_POSY );
   menuW->newVObj( 0, 2, txtChoose, MENU_TXT_POSX, MENU_TXT_POSY );
   menuW->newVObj( 0, 3, txtExit, MENU_EXIT_POSX, MENU_EXIT_POSY );
+    
+  menuW->bgPosX = 20;
+  menuW->bgPosY = 20;
+  menuW->winRec.w = 300;
+  menuW->winRec.h = 300;
+  menuW->winRec.x = 100;
+  menuW->winRec.y = 100;
   
- 
   
   //_SURFACE* txtTitle = _CREATE_RGBA_SURFACE( MENU_WIDTH, MENU_HEIGHT, MENU_BG_COLOR );
   
