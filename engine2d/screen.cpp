@@ -207,13 +207,15 @@ void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
   vObj->y = posy; 
   vObj->s = s; 
   _SIZE lastO;
-  for( ;row < rowEnd; row++ )
-    for( ;col < colEnd; col++ )
+  for( ; row < rowEnd; row++ )
+  {
+    for( _SIZE coli = col; coli < colEnd; coli++ )
 	{
-	  lastO = pMat[ index ][ row ][ col ].vo.size();
-      pMat[ index ][ row ][ col ].vo.resize( lastO + 1 );
-      pMat[ index ][ row ][ col ].vo[ lastO ] = vObj;
+	  lastO = pMat[ index ][ row ][ coli ].vo.size();
+      pMat[ index ][ row ][ coli ].vo.resize( lastO + 1 );
+      pMat[ index ][ row ][ coli ].vo[ lastO ] = vObj;
 	}
+  }
 }
 void theWindow::print_vo_sizes( _INDEX index ) {
   for( _SIZE i = 0; i < pMat[ 0 ].size(); i++ ) {
