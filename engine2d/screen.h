@@ -28,11 +28,11 @@ struct theWindow {
   void addPlane();
   void addFilledPlane();
   void redrawAllPlanes();
-  _SIZE print( tileSet* font, _SURFACE* d, _POS x, _POS y, const char *fmt, ... );
   void makeBackground( _SURFACE* d, _SURFACE* s );
   void placeRectangle( _SURFACE* d, _POS x, _POS y, _SIZE w, _SIZE h, _COLOR color );
   void placeRectangle( _SURFACE* d, _POS x, _POS y, _SIZE w, _SIZE h, _COLOR color, _SIZE bw, _COLOR bColor );
-  
+  _SIZE print( tileSet* font, _SURFACE* d, _POS x, _POS y, const char *fmt, ... );
+
   void addPlaneMatrix( _SIZE sectorWidth, _SIZE sectorHeight );
   void addPlaneMatrix();
   void makeBackgroundMatrix( _SIZE sw, _SIZE sh );

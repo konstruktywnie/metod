@@ -284,18 +284,22 @@ void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZ
 }
 void theWindow::prepareMatrixToDraw( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _SIZE colL ) 
 {
-  for( _SIZE i = 0; i < rowL; i++ ) 
-    for( _SIZE j = 0; j < colL; j++ )
+  _SIZE endRow = row + rowL;
+  _SIZE endCol = col + colL;
+  for( _SIZE i = row; i < endRow; i++ ) 
+    for( _SIZE j = col; j < endCol; j++ )
 	{
-	  _SIZE vos = pMat[ index ][ row + i ][ col + j ].vo.size();
+	  _SIZE vos = pMat[ index ][ i ][ j ].vo.size();
 	  for( _SIZE k = 0; k < vos; k++ )
-	    pMat[ index ][ row + i ][ col + j ].vo[ k ]->drawed = false;
+	    pMat[ index ][ i ][ j ].vo[ k ]->drawed = false;
 	}
 }
 
 bool theWindow::visibleInWindow( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS& vis_fx, _POS& vis_fy, _SIZE& vis_fw, _SIZE& vis_fh )
 {
-
+  if( fw > winRec.w ) fw = winRec.w;
+  if( fh > winRec.h ) fh = winRec.h;
+  
   _POS end_fx = fx + fw;
   _POS end_fy = fy + fh;
   _POS end_winx = bgPosX + winRec.w;
@@ -421,10 +425,12 @@ void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _S
   _POS visX, visY;
   _SIZE visW, visH;
   _RECTANGLE s, d;
+  _SIZE endRow = row + rowL;
+  _SIZE endCol = col + colL;
   
-  for( _SIZE i = 0; i < rowL; i++ ) 
+  for( _SIZE i = row; i < endRow; i++ ) 
   {
-    for( _SIZE j = 0; j < colL; j++ )
+    for( _SIZE j = col; j < endCol; j++ )
 	{
 	  _SIZE vos = pMat[ index ][ i ][ j ].vo.size();
 	  for( _SIZE k = 0; k < vos; k++ )
@@ -480,6 +486,8 @@ void theWindow::redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE visFW, 
 	  d.w = visW;
 	  d.h = visH;
 	  _APPLY_ON_DISPLAY( vObjs[ index ][ i ]->s, &s, &d );
+	  //fprintf( stderr, " (s.x)%i (s.y)%i (s.w)%i (s.h)%i (d.x)%i (d.y)%i (d.w)%i (d.h)%i\n", s.x, s.y, s.w, s.h, d.x, d.y, d.w, d.h );
+	  
 	  //vObjs[ index ][ i ]->drawed = true;
 	}
   }
