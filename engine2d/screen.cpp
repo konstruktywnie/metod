@@ -17,13 +17,28 @@ void theScreen::redraw()
   {
     windows[ i ]->redraw();
   }
+   
 }
+void theScreen::addWindow( _POS x, _POS y, _SIZE w, _SIZE h )
+{
+  _SIZE ws = windows.size();
+  windows.resize( ws + 1 );
+  windows[ ws ] = new theWindow;
+  windows[ ws ]->winRec.x = x;
+  windows[ ws ]->winRec.y = y;
+  windows[ ws ]->winRec.w = w;
+  windows[ ws ]->winRec.h = h;
+  windows[ ws ]->planesWidth = w;
+  windows[ ws ]->planesHeight = h;
+  
+}
+/*
 void theScreen::addWindow( _INDEX nr ) {
   windows.resize( windows.size() + nr );
   for( _INDEX i = 0; i < nr; i++ ) 
     windows[ i ] = new theWindow;
   
-}
+}*/
 void theScreen::addWindow() {
   windows.resize( windows.size() + 1 );
   windows[ windows.size() - 1 ] = new theWindow;
@@ -175,7 +190,7 @@ void theWindow::addPlaneMatrix() {
   vObjs.resize( vObjs.size() + 1 );
   
 }
-void theWindow::makeBackgroundMatrix( _SURFACE* image, _SIZE sw, _SIZE sh ) 
+void theWindow::makeBackgroundMatrix( _SIZE sw, _SIZE sh ) 
 {
   addPlaneMatrix( sw, sh );
   _SIZE mI = pMat.size() - 1;
@@ -184,12 +199,44 @@ void theWindow::makeBackgroundMatrix( _SURFACE* image, _SIZE sw, _SIZE sh )
   while( posY < planesHeight ) 
   {
     while( posX < planesWidth ) { 
-	  putOnMatrix( mI, image, posX, posY );
-	  posX += image->w;
+	  putOnMatrix( mI, background, posX, posY );
+	  posX += background->w;
     }
-	posY += image->h;
+	posY += background->h;
 	posX = 0;
   }
+}
+void theWindow::makeBorder( _SIZE bw, _COLOR bc )
+{
+  _SURFACE* b1 = _CREATE_RGBA_SURFACE( winRec.w, bw, bc );
+  _SURFACE* b2 = _CREATE_RGBA_SURFACE( bw, winRec.h, bc );
+  _SURFACE* b3 = _CREATE_RGBA_SURFACE( winRec.w, bw, bc );
+  _SURFACE* b4 = _CREATE_RGBA_SURFACE( bw, winRec.h, bc );
+  visObj* vb1 = new visObj;
+  visObj* vb2 = new visObj;
+  visObj* vb3 = new visObj;
+  visObj* vb4 = new visObj;
+  vb1->x = 0;
+  vb1->y = 0;
+  vb1->s = b1;
+  vb2->x = winRec.w - bw;
+  vb2->y = 0;
+  vb2->s = b2;
+  vb3->x = 0;
+  vb3->y = winRec.h - bw;
+  vb3->s = b3;
+  vb4->x = 0;
+  vb4->y = 0;
+  vb4->s = b4;
+  _SIZE lastRow = pMat[ 0 ].size() - 1;
+  _SIZE lastCol = pMat[ 0 ][ 0 ].size() - 1;
+  mSector* lastSector = &pMat[ 0 ][ lastRow ][ lastCol ];
+  lastSector->vo.resize( lastSector->vo.size() + 4 );
+  lastSector->vo[ lastSector->vo.size() - 1 ] = vb4;
+  lastSector->vo[ lastSector->vo.size() - 2 ] = vb3;
+  lastSector->vo[ lastSector->vo.size() - 3 ] = vb2;
+  lastSector->vo[ lastSector->vo.size() - 4 ] = vb1;
+  
 }
 void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
 {
@@ -235,19 +282,6 @@ void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZ
   if( col + colL > cols ) colL = cols - col;
   if( row + rowL > rows ) rowL = rows - row;
 }
-/*
-void theWindow::prepareMatrixToDraw( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h ) 
-{
-  _SIZE col, row, colL, rowL;
-  onMatrixCoordinates( index, x, y, w, h, col, row, rowL, colL );
-  for( _SIZE i = 0; i < rowL; i++ ) 
-    for( _SIZE j = 0; j < colL; j++ )
-	{
-	  _SIZE vos = pMat[ index ][ row + i ][ col + j ].vo.size();
-	  for( _SIZE k = 0; k < vos; k++ )
-	    pMat[ index ][ row + i ][ col + j ].vo[ k ]->drawed = false;
-	}
-}*/
 void theWindow::prepareMatrixToDraw( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _SIZE colL ) 
 {
   for( _SIZE i = 0; i < rowL; i++ ) 
@@ -261,9 +295,7 @@ void theWindow::prepareMatrixToDraw( _INDEX index, _SIZE row, _SIZE col, _SIZE r
 
 bool theWindow::visibleInWindow( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS& vis_fx, _POS& vis_fy, _SIZE& vis_fw, _SIZE& vis_fh )
 {
-//  if( fw > winRec.w ) fw = winRec.w;
-//  if( fh > winRec.h ) fh = winRec.h;
-  
+
   _POS end_fx = fx + fw;
   _POS end_fy = fy + fh;
   _POS end_winx = bgPosX + winRec.w;
