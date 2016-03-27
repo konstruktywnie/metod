@@ -49,6 +49,7 @@ theWindow::theWindow() {
   winRec.h = planesHeight = theScreen::scrHeight;
   winRec.x = winRec.y = bgPosX = bgPosY = 0;
   anchoredText = true;
+  border = false;
 }
 void theWindow::addPlane() {
   planes.resize( planes.size() + 1 );
@@ -216,27 +217,26 @@ void theWindow::makeBorder( _SIZE bw, _COLOR bc )
   visObj* vb2 = new visObj;
   visObj* vb3 = new visObj;
   visObj* vb4 = new visObj;
-  vb1->x = 0;
-  vb1->y = 0;
+  vb1->x = bgPosX;
+  vb1->y = bgPosY;
   vb1->s = b1;
   vb2->x = winRec.w - bw;
-  vb2->y = 0;
+  vb2->y = bgPosY;
   vb2->s = b2;
-  vb3->x = 0;
+  vb3->x = bgPosX;
   vb3->y = winRec.h - bw;
   vb3->s = b3;
-  vb4->x = 0;
-  vb4->y = 0;
+  vb4->x = bgPosX;
+  vb4->y = bgPosY;
   vb4->s = b4;
-  _SIZE lastRow = pMat[ 0 ].size() - 1;
-  _SIZE lastCol = pMat[ 0 ][ 0 ].size() - 1;
-  mSector* lastSector = &pMat[ 0 ][ lastRow ][ lastCol ];
-  lastSector->vo.resize( lastSector->vo.size() + 4 );
-  lastSector->vo[ lastSector->vo.size() - 1 ] = vb4;
-  lastSector->vo[ lastSector->vo.size() - 2 ] = vb3;
-  lastSector->vo[ lastSector->vo.size() - 3 ] = vb2;
-  lastSector->vo[ lastSector->vo.size() - 4 ] = vb1;
-  
+  _SIZE vos = vObjs.size();
+  vObjs.resize( vos + 1 );
+  vObjs[ vos ].resize( 4 );
+  vObjs[ vos ][ 0 ] = vb1;
+  vObjs[ vos ][ 1 ] = vb2;
+  vObjs[ vos ][ 2 ] = vb3;
+  vObjs[ vos ][ 3 ] = vb4;
+  border = true;
 }
 void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
 {
@@ -397,6 +397,7 @@ void theWindow::redraw() {
 void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
 {
   _SIZE matS = pMat.size();
+  _SIZE voS = vObjs.size();
   _POS visFX, visFY;
   _SIZE visFW, visFH;
   _RECTANGLE r;
@@ -405,12 +406,16 @@ void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
   {
     _SIZE col, row, colL, rowL;
     onMatrixCoordinates( 0, x, y, w, h, col, row, rowL, colL );
-    for( _SIZE i = 0; i < matS; i++ ) 
+    _SIZE i = 0;
+	for( ; i < matS; i++ ) 
 	{
 	  prepareMatrixToDraw( i, row, col, rowL, colL );
 	  redrawMatrix( i, row, col, rowL, colL, visFX, visFY, visFW, visFH );
 	  redrawVObjs( i, visFX, visFY, visFW, visFH );
 	}
+	for( ; i < voS; i++ )
+	  redrawVObjs( i, visFX, visFY, visFW, visFH );
+	  
     r.x = winRec.x + visFX - bgPosX;
     r.y = winRec.y + visFY - bgPosY;
     r.w = visFW;

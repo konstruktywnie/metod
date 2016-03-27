@@ -21,7 +21,7 @@ struct theWindow {
   _POS bgPosX, bgPosY;
   _RECTANGLE winRec;
   _SURFACE* background;
-  bool anchoredText;
+  bool anchoredText, border;
   
   theWindow();
   void addPlane( _INDEX nr );
