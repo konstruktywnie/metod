@@ -244,8 +244,8 @@ void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
   _SIZE cols = pMat[ index ][ 0 ].size();
   _SIZE col = posx / sectorWidth;
   _SIZE row = posy / sectorHeight;
-  _SIZE colEnd = (posx + s->w) / sectorWidth;
-  _SIZE rowEnd = (posy + s->h) / sectorHeight;
+  _SIZE colEnd = (posx + s->w) / sectorWidth + 1;
+  _SIZE rowEnd = (posy + s->h) / sectorHeight + 1;
   if( colEnd > cols ) colEnd = cols;
   if( rowEnd > rows ) rowEnd = rows;
   
@@ -411,11 +411,14 @@ void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
 	{
 	  prepareMatrixToDraw( i, row, col, rowL, colL );
 	  redrawMatrix( i, row, col, rowL, colL, visFX, visFY, visFW, visFH );
+	  //visibleVObjs(  );
 	  redrawVObjs( i, visFX, visFY, visFW, visFH );
 	}
-	for( ; i < voS; i++ )
+	for( ; i < voS; i++ ) {
+      //visibleVObjs(  );
 	  redrawVObjs( i, visFX, visFY, visFW, visFH );
-	  
+	
+	}  
     r.x = winRec.x + visFX - bgPosX;
     r.y = winRec.y + visFY - bgPosY;
     r.w = visFW;
@@ -497,4 +500,7 @@ void theWindow::redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE visFW, 
 	}
   }
 }
+void theWindow::visibleVObjs( _INDEX index, _POS fx, _POS fy, _SIZE fw, _SIZE fh )
+{
   
+}  
