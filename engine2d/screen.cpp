@@ -271,21 +271,19 @@ void theWindow::print_vo_sizes( _INDEX index ) {
     fprintf( stderr, "\n" );
   }
 }
-void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h, _SIZE& row, _SIZE& col, _SIZE& rowL, _SIZE& colL )
+void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h, _SIZE& row, _SIZE& col, _SIZE& endRow, _SIZE& endCol )
 {
   _SIZE rows = pMat[ index ].size();
   _SIZE cols = pMat[ index ][ 0 ].size();
   col = x / sectorWidth;
   row = y / sectorHeight;
-  colL = (x + w) / sectorWidth - col + 1;
-  rowL = (y + h) / sectorHeight - row + 1;
-  if( col + colL > cols ) colL = cols - col;
-  if( row + rowL > rows ) rowL = rows - row;
+  endCol = (x + w) / sectorWidth + 1;
+  endRow = (y + h) / sectorHeight + 1;
+  if( endCol > cols ) endCol = cols;
+  if( endRow > rows ) endRow = rows;
 }
-void theWindow::prepareMatrixToDraw( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _SIZE colL ) 
+void theWindow::prepareMatrixToDraw( _INDEX index, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol ) 
 {
-  _SIZE endRow = row + rowL;
-  _SIZE endCol = col + colL;
   for( _SIZE i = row; i < endRow; i++ ) 
     for( _SIZE j = col; j < endCol; j++ )
 	{
@@ -404,13 +402,13 @@ void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
     
   if( visibleInWindow( x, y, w, h, visFX, visFY, visFW, visFH ) )
   {
-    _SIZE col, row, colL, rowL;
-    onMatrixCoordinates( 0, x, y, w, h, col, row, rowL, colL );
+    _SIZE col, row, endCol, endRow;
+    onMatrixCoordinates( 0, x, y, w, h, col, row, endRow, endCol );
     _SIZE i = 0;
 	for( ; i < matS; i++ ) 
 	{
-	  prepareMatrixToDraw( i, row, col, rowL, colL );
-	  redrawMatrix( i, row, col, rowL, colL, visFX, visFY, visFW, visFH );
+	  prepareMatrixToDraw( i, row, col, endRow, endCol );
+	  redrawMatrix( i, row, col, endRow, endCol, visFX, visFY, visFW, visFH );
 	  //visibleVObjs(  );
 	  redrawVObjs( i, visFX, visFY, visFW, visFH );
 	}
@@ -428,14 +426,12 @@ void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
   
 }
 
-void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE rowL, _SIZE colL, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
+void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
 {
   _POS visX, visY;
   _SIZE visW, visH;
   _RECTANGLE s, d;
-  _SIZE endRow = row + rowL;
-  _SIZE endCol = col + colL;
-  
+
   for( _SIZE i = row; i < endRow; i++ ) 
   {
     for( _SIZE j = col; j < endCol; j++ )
