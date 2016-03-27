@@ -1,3 +1,2 @@
 del main.exe
-ccpp
-main.exe
+ccpp && main.exe

@@ -77,15 +77,13 @@
 	}
 	if( sizeof( $objFolders ) == 0 ) {
 	  echo "Error: There are no folders in $flagsFile\n";
-	  exit( 0 );
+	  exit( 1 );
 	}
     $allObj = "";
     $foldersNR = sizeof( $objFolders );
     for( $i = 0; $i < $foldersNR; $i++ )
       $allObj .= makeModules( $objFolders[ $i ] );
 
-   // echo $allObj;
-   // exit(0);
     if( !empty( $allObj ) ) {
       $linkCMD = "$linker $allObj -o $mainexe $lFlags";
       $out = shell_exec( "$linkCMD 2>&1" );
@@ -97,6 +95,7 @@
 	exit( 1 );
   }
   
+exit( 0 );
 
 function makeModules( $folder ) {
   global $stopOnMsg;

@@ -8,6 +8,7 @@ appResources::appResources()
   mainTileset.loadFromFile( RES_MAIN_TILESET, 0, 0 );
   bGround.resize( MAX_BGRS );
   bGround[ BGR_MENU ] = _LOAD_IMG( RES_MENU_BACKGROUND );
+  bGround[ BGR_MENU_LIST ] = _CREATE_RGBA_SURFACE( 64, 64, MENU_BG_COLOR );
   bGround[ BGR_LEVEL ] = _LOAD_IMG( RES_BACKGROUND );
   font.loadFromFile( RES_FONT1, FONT1_W, FONT1_H );
   font.changeColor( COLOR_BLANK, FONT_MENU_COLOR );

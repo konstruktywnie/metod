@@ -6,4 +6,4 @@
 #define FONT_MENU_COLOR 0xf0f30aff
 #define RES_MENU_BACKGROUND "data/graphics/bkg.jpg"
 
-enum { BGR_MENU = 0, BGR_LEVEL, MAX_BGRS };
+enum { BGR_MENU = 0, BGR_MENU_LIST, BGR_LEVEL, MAX_BGRS };

@@ -1,3 +1,2 @@
 call d.bat
-ccpp
-main.exe
+ccpp && main.exe

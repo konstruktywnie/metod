@@ -25,10 +25,10 @@
 #define BORDER_MENU_WIDTH 2
 #define BORDER_MENU_COLOR 0xffffffff
 #define MENU_CHOOSE_LEVEL_TXT "Choose level:"
-#define MENU_TXT_POSX (MENU_POSX + 25)
-#define MENU_TXT_POSY (MENU_POSY + 15)
+#define MENU_TXT_POSX 25
+#define MENU_TXT_POSY 15
 #define MENU_EXIT_TXT "Exit"
 #define MENU_EXIT_POSX (MENU_TXT_POSX)
-#define MENU_EXIT_POSY (MENU_POSY + MENU_HEIGHT - 50)
+#define MENU_EXIT_POSY (MENU_HEIGHT - 50)
 
 
