@@ -90,3 +90,76 @@ void tileSet::translucentToTransparent() {
 	}
   }
 }
+
+bool jointField( _POS f1x, _POS f1y, _SIZE f1w, _SIZE f1h, _POS f2x, _POS f2y, _POS f2w, _POS f2h, _POS& jf1x, _POS& jf1x_end, _POS& jf1y, _POS& jf1y_end, _POS& jf2x, _POS& jf2x_end, _POS& jf2y, _POS& jf2y_end )
+{
+  _POS f1x_end = f1x + f1w;
+  _POS f1y_end = f1y + f1h;
+  _POS f2x_end = f2x + f2w;
+  _POS f2y_end = f2y + f2h;
+  
+  if( f1x_end >= f2x && f1x <= f2x_end && f1y_end >= f2y && f1y <= f2y_end )
+  {
+    if( f1x_end >= f2x && f1x_end <= f2x_end && f1x < f2x )
+	{
+	  jf1x = f2x - f1x;
+	  jf1x_end = f1w;
+	  jf2x = 0;
+	  jf2x_end = f1x_end - f2x + 1;
+	} else
+	if( f1x_end > f2x_end && f1x <= f2x_end && f1x >= f2x )
+	{
+	  jf2x = f1x - f2x;
+	  jf2x_end = f2w;
+	  jf1x = 0;
+	  jf1x_end = f2x_end - f1x + 1;
+	} else
+	if( f1x >= f2x && f1x_end <= f2x_end )
+	{
+	  jf1x = 0;
+	  jf1x_end = f1w;
+	  jf2x = f1x - f2x;
+	  jf2x_end = f2x_end - f1x_end + 1;
+	} else
+	if( f1x < f2x && f2x_end > f2x_end )
+	{
+	  jf2x = 0;
+	  jf2x_end = f2w;
+	  jf1x = f2x - f1x;
+	  jf1x_end = f1x_end - f2x_end + 1;
+	}
+	
+	if( f1y_end >= f2y && f1y_end <= f2y_end && f1y < f2y )
+	{
+	  jf1y = f2y - f1y;
+	  jf1y_end = f1h;
+	  jf2y = 0;
+	  jf2y_end = f1y_end - f2y + 1;
+	} else
+	if( f1y_end > f2y_end && f1y <= f2y_end && f1y >= f2y )
+	{
+	  jf2y = f1y - f2y;
+	  jf2y_end = f2h;
+	  jf1y = 0;
+	  jf1y_end = f2y_end - f1y + 1;
+	} else
+	if( f1y >= f2y && f1y_end <= f2y_end )
+	{
+	  jf1y = 0;
+	  jf1y_end = f1h;
+	  jf2y = f1y - f2y;
+	  jf2y_end = f2y_end - f1y_end + 1;
+	} else
+	if( f1y < f2y && f2y_end > f2y_end )
+	{
+	  jf2y = 0;
+	  jf2y_end = f2h;
+	  jf1y = f2y - f1y;
+	  jf1y_end = f1y_end - f2y_end + 1;
+	}
+  
+    return true;
+  }
+  
+  return false;
+}

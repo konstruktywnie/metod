@@ -14,3 +14,4 @@ struct appResources
   appResources();
 };
 
+bool jointField( _POS f1x, _POS f1y, _SIZE f1w, _SIZE f1h, _POS f2x, _POS f2y, _POS f2w, _POS f2h, _POS& jf1x, _POS& jf1x_end, _POS& jf1y, _POS& jf1y_end, _POS& jf2x, _POS& jf2x_end, _POS& jf2y, _POS& jf2y_end );
