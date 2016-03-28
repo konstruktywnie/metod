@@ -19,6 +19,13 @@ void theScreen::redraw()
   }
    
 }
+void theScreen::redraw( _SIZE nr )
+{
+  for( _SIZE i = 0; i < nr; i++ )
+  {
+    windows[ i ]->redraw();
+  }
+}
 void theScreen::addWindow( _POS x, _POS y, _SIZE w, _SIZE h )
 {
   _SIZE ws = windows.size();
@@ -50,6 +57,7 @@ theWindow::theWindow() {
   winRec.x = winRec.y = bgPosX = bgPosY = 0;
   anchoredText = true;
   border = false;
+  upperWindow = NULL;
 }
 void theWindow::addPlane() {
   planes.resize( planes.size() + 1 );
@@ -85,7 +93,6 @@ void theWindow::placeRectangle( _SURFACE* d, _POS x, _POS y, _SIZE w, _SIZE h, _
   offset.y = y;
   offset.w = 0;
   offset.h = 0;
-  //_SURFACE_SET_ALPHA( rs );
   _SURFACE_BLIT( rs, NULL, d, &offset );
   _FREE_SURFACE( rs );
 }
@@ -299,7 +306,7 @@ inline bool theWindow::visibleInWindow( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _P
   _POS end_fy = fy + fh;
   _POS end_winx = bgPosX + winRec.w;
   _POS end_winy = bgPosY + winRec.h;
-
+  
   if( end_fx >= bgPosX && fx <= end_winx && end_fy >= bgPosY  && fy <= end_winy )
   {
     if( fx >= bgPosX && end_fx <= end_winx )
@@ -345,6 +352,7 @@ inline bool theWindow::visibleInWindow( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _P
   }
   return false;
 }
+/*
 inline bool theWindow::visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS sx, _POS sy, _POS sw, _POS sh, _POS& vis_sx, _POS& vis_sy, _SIZE& vis_sw, _SIZE& vis_sh )
 {
   _POS end_fx = fx + fw;
@@ -394,6 +402,7 @@ inline bool theWindow::visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS 
   }
   return false;
 }
+*/
 void theWindow::redraw() {
   redrawField( bgPosX, bgPosY, winRec.w, winRec.h );
 }
@@ -401,11 +410,14 @@ void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
 {
   _SIZE matS = pMat.size();
   _SIZE voS = vObjs.size();
-  _POS visFX, visFY;
+  _POS visFX, visFY, vis, visFX_, visFY_, visFW_, visFH_;
   _SIZE visFW, visFH;
   _RECTANGLE r;
-    
+  //jointField( bgPosX, bgPosY, bgPosX + winRec.w, bgPosY + winRec.h, x, y, w, h, visFX_, visFY_, visFW_, visFH_ );
+  //fprintf( stderr, " *(visFX_)%i (visFY_)%i (visFW_)%i (visFH_)%i\n", visFX_, visFY_, visFW_, visFH_ );
+  
   if( visibleInWindow( x, y, w, h, visFX, visFY, visFW, visFH ) )
+  //if( jointField( bgPosX, bgPosY, bgPosX + winRec.w, bgPosY + winRec.h, x, y, w, h, visFX, visFY, visFW, visFH ) )
   {
     _SIZE col, row, endCol, endRow;
     onMatrixCoordinates( 0, x, y, w, h, col, row, endRow, endCol );
@@ -414,19 +426,32 @@ void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
 	{
 	  prepareMatrixToDraw( i, row, col, endRow, endCol );
 	  redrawMatrix( i, row, col, endRow, endCol, visFX, visFY, visFW, visFH );
-	  //visibleVObjs(  );
+ 
 	  redrawVObjs( i, visFX, visFY, visFW, visFH );
 	}
 	for( ; i < voS; i++ ) {
-      //visibleVObjs(  );
-	  redrawVObjs( i, visFX, visFY, visFW, visFH );
+      redrawVObjs( i, visFX, visFY, visFW, visFH );
 	
 	}  
+
     r.x = winRec.x + visFX - bgPosX;
     r.y = winRec.y + visFY - bgPosY;
     r.w = visFW;
     r.h = visFH;
+	
+	if( upperWindow != NULL )
+	{
+	  _RECTANGLE w2;
+	  _POS jf1x, jf1y, jfw, jfh;
+	  if( jointField( upperWindow->winRec.x, upperWindow->winRec.y, upperWindow->winRec.w, upperWindow->winRec.h, r.x, r.y, r.w, r.h, jf1x, jf1y, jfw, jfh ) )
+	  //if( visibleField( upperWindow->winRec.x, upperWindow->winRec.y, upperWindow->winRec.w, upperWindow->winRec.h, r.x, r.y, r.w, r.h, jf2x, jf2x_end, jf2y, jf2y_end ) )
+	  {
+		upperWindow->redrawField( jf1x, jf1y, jfw, jfh );
+	  }
+	}
+	
     _UPDATE_DISPLAY( &r );
+	
   }
   
 }
@@ -436,7 +461,7 @@ inline void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE e
   _POS visX, visY;
   _SIZE visW, visH;
   _RECTANGLE s, d;
-
+  
   for( _SIZE i = row; i < endRow; i++ ) 
   {
     for( _SIZE j = col; j < endCol; j++ )
@@ -446,7 +471,7 @@ inline void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE e
 	  {
 	    visObj* vObj = pMat[ index ][ i ][ j ].vo[ k ];
 		
-		if( !vObj->drawed && visibleField( visFX, visFY, visFW, visFH, vObj->x, vObj->y, vObj->s->w, vObj->s->h, visX, visY, visW, visH ) )
+		if( !vObj->drawed && jointField( vObj->x, vObj->y, vObj->s->w, vObj->s->h, visFX, visFY, visFW, visFH, visX, visY, visW, visH ) )
 		{
 		  s.x = visX;
 		  s.y = visY;
@@ -458,6 +483,7 @@ inline void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE e
 		  d.h = visH;
 		  _APPLY_ON_DISPLAY( vObj->s, &s, &d );
 		  vObj->drawed = true;
+		  
 		}
 		
 	  }
@@ -484,7 +510,7 @@ inline void theWindow::redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE 
   _RECTANGLE s, d;
   for(_SIZE i = 0; i < voS; i++ )
   {
-    if( visibleField( visFX, visFY, visFW, visFH, vObjs[ index ][ i ]->x, vObjs[ index ][ i ]->y, vObjs[ index ][ i ]->s->w, vObjs[ index ][ i ]->s->h, visX, visY, visW, visH ) )
+    if( jointField( vObjs[ index ][ i ]->x, vObjs[ index ][ i ]->y, vObjs[ index ][ i ]->s->w, vObjs[ index ][ i ]->s->h, visFX, visFY, visFW, visFH, visX, visY, visW, visH ) )
 	{
 	  s.x = visX;
 	  s.y = visY;
@@ -495,7 +521,6 @@ inline void theWindow::redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE 
 	  d.w = visW;
 	  d.h = visH;
 	  _APPLY_ON_DISPLAY( vObjs[ index ][ i ]->s, &s, &d );
-	  //fprintf( stderr, " (s.x)%i (s.y)%i (s.w)%i (s.h)%i (d.x)%i (d.y)%i (d.w)%i (d.h)%i\n", s.x, s.y, s.w, s.h, d.x, d.y, d.w, d.h );
 	  
 	  //vObjs[ index ][ i ]->drawed = true;
 	}

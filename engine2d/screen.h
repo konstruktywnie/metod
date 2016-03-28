@@ -21,6 +21,7 @@ struct theWindow {
   _POS bgPosX, bgPosY;
   _RECTANGLE winRec;
   _SURFACE* background;
+  theWindow* upperWindow;
   bool anchoredText, border;
   
   theWindow();
@@ -44,7 +45,7 @@ struct theWindow {
   void onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h, _SIZE& row, _SIZE& col, _SIZE& endRow, _SIZE& endCol );
   void prepareMatrixToDraw( _INDEX i, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol );
   bool visibleInWindow( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS& vis_fx, _POS& vis_fy, _SIZE& vis_fw, _SIZE& vis_fh );
-  bool visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS sx, _POS sy, _POS sw, _POS sh, _POS& vis_sx, _POS& vis_sy, _SIZE& vis_sw, _SIZE& vis_sh );
+//  bool visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS sx, _POS sy, _POS sw, _POS sh, _POS& vis_sx, _POS& vis_sy, _SIZE& vis_sw, _SIZE& vis_sh );
   void redrawField( _POS x, _POS y, _SIZE w, _SIZE h );
   void redraw();
   void newVObj( _INDEX p, _INDEX i, _SURFACE* s, _POS x, _POS y );
@@ -59,4 +60,5 @@ struct theScreen {
   void addWindow( _POS x, _POS y, _SIZE w, _SIZE h );
   void addWindow();
   void redraw();
+  void redraw( _SIZE nr );
 };
