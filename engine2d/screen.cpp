@@ -271,7 +271,7 @@ void theWindow::print_vo_sizes( _INDEX index ) {
     fprintf( stderr, "\n" );
   }
 }
-void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h, _SIZE& row, _SIZE& col, _SIZE& endRow, _SIZE& endCol )
+inline void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h, _SIZE& row, _SIZE& col, _SIZE& endRow, _SIZE& endCol )
 {
   _SIZE rows = pMat[ index ].size();
   _SIZE cols = pMat[ index ][ 0 ].size();
@@ -282,7 +282,7 @@ void theWindow::onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZ
   if( endCol > cols ) endCol = cols;
   if( endRow > rows ) endRow = rows;
 }
-void theWindow::prepareMatrixToDraw( _INDEX index, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol ) 
+inline void theWindow::prepareMatrixToDraw( _INDEX index, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol ) 
 {
   for( _SIZE i = row; i < endRow; i++ ) 
     for( _SIZE j = col; j < endCol; j++ )
@@ -293,93 +293,98 @@ void theWindow::prepareMatrixToDraw( _INDEX index, _SIZE row, _SIZE col, _SIZE e
 	}
 }
 
-bool theWindow::visibleInWindow( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS& vis_fx, _POS& vis_fy, _SIZE& vis_fw, _SIZE& vis_fh )
+inline bool theWindow::visibleInWindow( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS& vis_fx, _POS& vis_fy, _SIZE& vis_fw, _SIZE& vis_fh )
 {
-  if( fw > winRec.w ) fw = winRec.w;
-  if( fh > winRec.h ) fh = winRec.h;
-  
   _POS end_fx = fx + fw;
   _POS end_fy = fy + fh;
   _POS end_winx = bgPosX + winRec.w;
   _POS end_winy = bgPosY + winRec.h;
-  
-  vis_fx = fx;
-  vis_fy = fy;
-  vis_fw = fw;
-  vis_fh = fh;
-  
-  if( end_fx > bgPosX && fx < end_winx && end_fy > bgPosY  && fy < end_winy )
+
+  if( end_fx >= bgPosX && fx <= end_winx && end_fy >= bgPosY  && fy <= end_winy )
   {
-    if( end_fx > bgPosX && fx < bgPosX )
+    if( fx >= bgPosX && end_fx <= end_winx )
+	{
+	  vis_fx = fx;
+	  vis_fw = fw;	
+	} else
+    if( end_fx >= bgPosX && end_fx <= end_winx && fx < bgPosX )
 	{
 	  vis_fx = bgPosX;
 	  vis_fw = fw - (bgPosX - fx);
-	}
-	if( end_fx > bgPosX + winRec.w && fx < end_winx ) {
+	} else
+	if( end_fx > end_winx && fx <= end_winx && fx >= bgPosX ) {
 	  vis_fx = fx;
 	  vis_fw = fw - (end_fx - end_winx);
-	}
+	} else
 	if( fx < bgPosX && end_fx > end_winx )
 	{
 	  vis_fx = bgPosX;
-	  vis_fw = end_winx - bgPosX;
+	  vis_fw = winRec.w;
 	}
 	
-    if( end_fy > bgPosY && fy < bgPosY ) {
+	if( fy >= bgPosY && end_fy <= end_winy )
+	{
+	  vis_fy = fy;
+	  vis_fh = fh;	
+	} else
+    if( end_fy >= bgPosY && end_fy <= end_winy && fy < bgPosY ) {
 	  vis_fy = bgPosY;
 	  vis_fh = fh - (bgPosY - fy);
-	}
-	if( end_fy > end_winy && fy < end_winy ) {
+	} else
+	if( end_fy > end_winy && fy <= end_winy && fy >= bgPosY ) {
 	  vis_fy = fy;
 	  vis_fh = fh - (end_fy - end_winy);
-	}
+	} else
 	if( fy < bgPosY && end_fy > end_winy )
 	{
 	  vis_fy = bgPosY;
-	  vis_fh = end_winy - bgPosY;
+	  vis_fh = winRec.h;
 	}
 	
 	return true;
   }
   return false;
 }
-bool theWindow::visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS sx, _POS sy, _POS sw, _POS sh, _POS& vis_sx, _POS& vis_sy, _SIZE& vis_sw, _SIZE& vis_sh )
+inline bool theWindow::visibleField( _POS fx, _POS fy, _SIZE fw, _SIZE fh, _POS sx, _POS sy, _POS sw, _POS sh, _POS& vis_sx, _POS& vis_sy, _SIZE& vis_sw, _SIZE& vis_sh )
 {
   _POS end_fx = fx + fw;
   _POS end_fy = fy + fh;
   _POS end_sx = sx + sw;
   _POS end_sy = sy + sh;
-  vis_sx = 0;
-  vis_sy = 0;
-  vis_sw = sw;
-  vis_sh = sh;
   
-  if( end_sx > fx && sx < end_fx && end_sy > fy && sy < end_fy )
+  if( end_sx >= fx && sx <= end_fx && end_sy >= fy && sy <= end_fy )
   {
-    	
-	if( end_sx > fx && sx < fx )
+    if( end_sx <= end_fx && sx >= fx ) {
+	  vis_sx = 0;
+      vis_sw = sw;
+	} else
+	if( end_sx >= fx && end_sx <= end_fx && sx < fx )
 	{
 	  vis_sx = fx - sx;
 	  vis_sw = sw - vis_sx;
-	}
-	if( end_sx > end_fx && sx < end_fx ) {
+	} else
+	if( end_sx > end_fx && sx <= end_fx && sx >= fx ) {
 	  vis_sx = 0;
-	  vis_sw = sw - (end_sx - end_fx);
-	}
+	  vis_sw = end_fx - sx;
+	} else
 	if( end_sx > end_fx && sx < fx ) {
 	  vis_sx = fx - sx;
 	  vis_sw = fw;
 	}
-	
-	if( end_sy > fy && sy < fy )
+
+	if( end_sy <= end_fy && sy >= fy ) {
+	  vis_sy = 0;
+      vis_sh = sh;
+	} else
+	if( end_sy >= fy && end_sy <= end_fy && sy < fy )
 	{
 	  vis_sy = fy - sy;
 	  vis_sh = sh - vis_sy;
-	}
-	if( end_sy > end_fy && sy < end_fy ) {
+	} else
+	if( end_sy > end_fy && sy <= end_fy && sy >= fy ) {
 	  vis_sy = 0;
-	  vis_sh = sh - (end_sy - end_fy);
-	}
+	  vis_sh = end_fy - sy;
+	} else
 	if( end_sy > end_fy && sy < fy ) {
 	  vis_sy = fy - sy;
 	  vis_sh = fh;
@@ -426,7 +431,7 @@ void theWindow::redrawField( _POS x, _POS y, _SIZE w, _SIZE h )
   
 }
 
-void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
+inline void theWindow::redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
 {
   _POS visX, visY;
   _SIZE visW, visH;
@@ -471,7 +476,7 @@ void theWindow::newVObj( _INDEX p, _INDEX i, _SURFACE* s, _POS x, _POS y )
   vObjs[ p ][ i ]->x = x;
   vObjs[ p ][ i ]->y = y;
 }
-void theWindow::redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
+inline void theWindow::redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH )
 {
   _POS visX, visY;
   _SIZE visW, visH;
@@ -496,7 +501,3 @@ void theWindow::redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE visFW, 
 	}
   }
 }
-void theWindow::visibleVObjs( _INDEX index, _POS fx, _POS fy, _SIZE fw, _SIZE fh )
-{
-  
-}  
