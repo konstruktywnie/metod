@@ -20,7 +20,7 @@ struct theWindow {
   _SIZE planesWidth, planesHeight, sectorWidth, sectorHeight;
   _POS bgPosX, bgPosY;
   _RECTANGLE winRec;
-  _SURFACE* background;
+  //_SURFACE* background;
   theWindow* upperWindow;
   bool anchoredText, border;
   
@@ -36,7 +36,7 @@ struct theWindow {
 
   void addPlaneMatrix( _SIZE sectorWidth, _SIZE sectorHeight );
   void addPlaneMatrix();
-  void makeBackgroundMatrix( _SIZE sw, _SIZE sh );
+  void makeBackgroundMatrix( _INDEX mI, _SURFACE* background );
   void makeBorder( _SIZE bw, _COLOR bc );
   void redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH );
   void redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH );

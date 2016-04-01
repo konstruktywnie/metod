@@ -2,6 +2,7 @@
 #include "resources.h"
 #include "screen.h"
 #include "../config.h"
+#include "../config_resources.h"
 #include "../level.h"
 #include "../game.h"
 
@@ -37,7 +38,9 @@ void theScreen::addWindow( _POS x, _POS y, _SIZE w, _SIZE h )
   windows[ ws ]->winRec.h = h;
   windows[ ws ]->planesWidth = w;
   windows[ ws ]->planesHeight = h;
-  
+  windows[ ws ]->sectorWidth = w;
+  windows[ ws ]->sectorHeight = h;
+ 
 }
 /*
 void theScreen::addWindow( _INDEX nr ) {
@@ -198,10 +201,10 @@ void theWindow::addPlaneMatrix() {
   vObjs.resize( vObjs.size() + 1 );
   
 }
-void theWindow::makeBackgroundMatrix( _SIZE sw, _SIZE sh ) 
+void theWindow::makeBackgroundMatrix( _INDEX mI, _SURFACE* background ) 
 {
-  addPlaneMatrix( sw, sh );
-  _SIZE mI = pMat.size() - 1;
+  
+  addPlaneMatrix( background->w, background->h );
   _POS posX = 0;
   _POS posY = 0;
   while( posY < planesHeight ) 
@@ -216,10 +219,17 @@ void theWindow::makeBackgroundMatrix( _SIZE sw, _SIZE sh )
 }
 void theWindow::makeBorder( _SIZE bw, _COLOR bc )
 {
+  addPlaneMatrix();
   _SURFACE* b1 = _CREATE_RGBA_SURFACE( winRec.w, bw, bc );
   _SURFACE* b2 = _CREATE_RGBA_SURFACE( bw, winRec.h, bc );
   _SURFACE* b3 = _CREATE_RGBA_SURFACE( winRec.w, bw, bc );
   _SURFACE* b4 = _CREATE_RGBA_SURFACE( bw, winRec.h, bc );
+  putOnMatrix( pMat.size() - 1, b1, 0, 0 );
+  putOnMatrix( pMat.size() - 1, b2, 0, 0 );
+  putOnMatrix( pMat.size() - 1, b3, 0, winRec.h - bw );
+  putOnMatrix( pMat.size() - 1, b4, winRec.w - bw, 0 );
+  
+/*  
   visObj* vb1 = new visObj;
   visObj* vb2 = new visObj;
   visObj* vb3 = new visObj;
@@ -243,7 +253,9 @@ void theWindow::makeBorder( _SIZE bw, _COLOR bc )
   vObjs[ vos ][ 1 ] = vb2;
   vObjs[ vos ][ 2 ] = vb3;
   vObjs[ vos ][ 3 ] = vb4;
+*/
   border = true;
+  
 }
 void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
 {
