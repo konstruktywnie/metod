@@ -23,44 +23,51 @@ void theGame::buildMenu()
   menuW->print( &res->font, menuW->planes[ 0 ], MENU_EXIT_POSX, MENU_EXIT_POSY, MENU_EXIT_TXT );
 */
 
-  _SIZE fw = res->font.tiles[ 0 ]->w;
-  _SIZE fh = res->font.tiles[ 0 ]->h;
-  
+  screens[ SCREEN_MENU ].addWindow( TITLE_POSX, TITLE_POSY, TITLE_WIDTH, TITLE_HEIGHT );
   screens[ SCREEN_MENU ].addWindow( MENU_POSX, MENU_POSY, MENU_WIDTH, MENU_HEIGHT );
-  theWindow* menuW2 = screens[ SCREEN_MENU ].windows[ 1 ];
-  menuW2->background = res->bGround[ BGR_MENU_LIST ];
-  //menuW2->placeRectangle( menuW2->background, 0, 0, menuW2->background->w, menuW2->background->h, 0, BORDER_MENU_WIDTH, BORDER_MENU_COLOR );
-  menuW2->makeBackgroundMatrix( res->bGround[ BGR_MENU_LIST ]->w, res->bGround[ BGR_MENU_LIST ]->h );
-  menuW2->makeBorder( BORDER_MENU_WIDTH, BORDER_MENU_COLOR );
-  
+
   theWindow* menuW = screens[ SCREEN_MENU ].windows[ 0 ];
-  menuW->background = res->bGround[ BGR_MENU ];
-  menuW->makeBackgroundMatrix( res->bGround[ BGR_MENU ]->w, res->bGround[ BGR_MENU ]->h );
-  _SURFACE* mTitle = _CREATE_RGBA_SURFACE( TITLE_WIDTH, TITLE_HEIGHT, TITLE_BG_COLOR );
-  //_SURFACE* mMain = _CREATE_RGBA_SURFACE( MENU_WIDTH, MENU_HEIGHT, MENU_BG_COLOR );
-  _SURFACE* txtChoose = _CREATE_RGBA_SURFACE( fw * strlen( MENU_CHOOSE_LEVEL_TXT ), fh, 0 );
-  _SURFACE* txtExit = _CREATE_RGBA_SURFACE( fw * strlen( MENU_EXIT_TXT ), fh, 0 );
-  menuW->placeRectangle( mTitle, 0, 0, mTitle->w, mTitle->h, 0, BORDER_MENU_WIDTH, BORDER_MENU_COLOR );
-  //menuW->placeRectangle( mMain, 0, 0, mMain->w, mMain->h, 0, BORDER_MENU_WIDTH, BORDER_MENU_COLOR );
+  theWindow* menuW1 = screens[ SCREEN_MENU ].windows[ 1 ];
+  theWindow* menuW2 = screens[ SCREEN_MENU ].windows[ 2 ];
+
+  menuW->makeBackgroundMatrix( 0, res->bGround[ BGR_MENU ] );
+  menuW1->addPlaneMatrix();
+  menuW2->makeBackgroundMatrix( 0, res->bGround[ BGR_MENU_LIST ] );
+
+  _SURFACE* mTitle = _CREATE_RGBA_SURFACE( TITLE_WIDTH, TITLE_HEIGHT, MENU_BG_COLOR );
+  _SURFACE* txtChoose = _CREATE_RGBA_SURFACE( res->font.tiles[ 0 ]->w * strlen( MENU_CHOOSE_LEVEL_TXT ), res->font.tiles[ 0 ]->h, 0 );
+  _SURFACE* txtExit = _CREATE_RGBA_SURFACE( res->font.tiles[ 0 ]->w * strlen( MENU_EXIT_TXT ), res->font.tiles[ 0 ]->h, 0 );
   
-  menuW->anchoredText = true;
-  menuW->print( &res->font, mTitle, 35, 15, TITLE_TEXT );
+  menuW1->anchoredText = true;
+  menuW1->print( &res->font, mTitle, TITLE_TEXT_POSX, TITLE_TEXT_POSY, TITLE_TEXT );
   menuW2->anchoredText = false;
   menuW2->print( &res->font, txtChoose, 0, 0, MENU_CHOOSE_LEVEL_TXT );
   menuW2->print( &res->font, txtExit, 0, 0, MENU_EXIT_TXT );
 
-  menuW->newVObj( 0, 0, mTitle, TITLE_TEXT_POSX, TITLE_TEXT_POSY );
-  //menuW2->newVObj( 0, 1, mMain, MENU_POSX, MENU_POSY );
+  menuW1->putOnMatrix( 0, mTitle, 0, 0 );
+  menuW2->addPlaneMatrix();
+  menuW2->putOnMatrix( 1, txtChoose, MENU_TXT_POSX, MENU_TXT_POSY );
+  menuW2->putOnMatrix( 1, txtExit, MENU_EXIT_POSX, MENU_EXIT_POSY );
+
+  /*
+  menuW1->newVObj( 0, 0, mTitle, 0, 0 );
   menuW2->newVObj( 0, 0, txtChoose, MENU_TXT_POSX, MENU_TXT_POSY );
   menuW2->newVObj( 0, 1, txtExit, MENU_EXIT_POSX, MENU_EXIT_POSY );
+*/
+
+
+  menuW1->makeBorder( BORDER_MENU_WIDTH, BORDER_MENU_COLOR );
+  menuW2->makeBorder( BORDER_MENU_WIDTH, BORDER_MENU_COLOR );
+
   
-/*    
-  menuW->bgPosX = 20;
-  menuW->bgPosY = 20;
-  menuW->winRec.w = 300;
-  menuW->winRec.h = 300;
-  menuW->winRec.x = 100;
-  menuW->winRec.y = 100;
+  //menuW->upperWindow = menuW2;
+    /*
+  menuW->bgPosX = 100;
+  menuW->bgPosY = 40;
+  menuW->winRec.w = 400;
+  menuW->winRec.h = 400;
+  menuW->winRec.x = 50;
+  menuW->winRec.y = 130;
   */
   
   //_SURFACE* txtTitle = _CREATE_RGBA_SURFACE( MENU_WIDTH, MENU_HEIGHT, MENU_BG_COLOR );
@@ -94,7 +101,12 @@ void initGame() {
   */
  // _SURFACE* m = _CREATE_RGBA_SURFACE( MENU_WIDTH, MENU_HEIGHT, MENU_BG_COLOR );
  // Game.screens[ SCREEN_MENU ].windows[ 0 ]->putOnMatrix( 0, m, MENU_POSX, MENU_POSY );
-  Game.screens[ SCREEN_MENU ].redraw();
+  
  
+  Game.screens[ SCREEN_MENU ].redraw();
+  //Game.screens[ SCREEN_MENU ].windows[ 0 ]->putOnMatrix( 0, Game.res->bGround[ BGR_LEVEL ], 70, 140 );
+  
+   // Game.screens[ SCREEN_MENU ].windows[ 0 ]->redraw();
+  //Game.screens[ SCREEN_MENU ].windows[ 0 ]->redrawField( 51, 133, 100, 50 );
  //Game.screens[ SCREEN_MENU ].windows[ 0 ]->redrawField( 0, 0, Game.screens[ SCREEN_MENU ].windows[ 0 ]->winRec.w, Game.screens[ SCREEN_MENU ].windows[ 0 ]->winRec.h );
 }
