@@ -2,6 +2,7 @@
 #include "resources.h"
 #include "../config.h"
 
+
 _SIZE tileSet::loadFromFile( char* f, _SIZE tileWidth, _SIZE tileHeight ) {
   _SURFACE* image;
   image = _LOAD_IMG( f );

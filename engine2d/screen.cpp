@@ -204,7 +204,7 @@ void theWindow::addPlaneMatrix() {
 void theWindow::makeBackgroundMatrix( _INDEX mI, _SURFACE* background ) 
 {
   
-  addPlaneMatrix( background->w, background->h );
+  //addPlaneMatrix( background->w, background->h );
   _POS posX = 0;
   _POS posY = 0;
   while( posY < planesHeight ) 
@@ -217,6 +217,7 @@ void theWindow::makeBackgroundMatrix( _INDEX mI, _SURFACE* background )
 	posX = 0;
   }
 }
+
 void theWindow::makeBorder( _SIZE bw, _COLOR bc )
 {
   addPlaneMatrix();
