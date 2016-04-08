@@ -7,5 +7,6 @@ struct theGame {
   
   theGame();
   void buildMenu();
-
+  void buildLevel( _CHAR* name );
+  
 };

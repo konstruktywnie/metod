@@ -30,8 +30,10 @@ void theGame::buildMenu()
   theWindow* menuW1 = screens[ SCREEN_MENU ].windows[ 1 ];
   theWindow* menuW2 = screens[ SCREEN_MENU ].windows[ 2 ];
 
+  menuW->addPlaneMatrix( res->bGround[ BGR_MENU ]->w, res->bGround[ BGR_MENU ]->h );
   menuW->makeBackgroundMatrix( 0, res->bGround[ BGR_MENU ] );
   menuW1->addPlaneMatrix();
+  menuW2->addPlaneMatrix( res->bGround[ BGR_MENU_LIST ]->w, res->bGround[ BGR_MENU_LIST ]->h );
   menuW2->makeBackgroundMatrix( 0, res->bGround[ BGR_MENU_LIST ] );
 
   _SURFACE* mTitle = _CREATE_RGBA_SURFACE( TITLE_WIDTH, TITLE_HEIGHT, MENU_BG_COLOR );
@@ -81,6 +83,14 @@ theGame::theGame() {
   buildMenu();  
 }
 
+void theGame::buildLevel( _CHAR* name )
+{
+  lvl = new theLevel;
+  lvl->player = new thePlayer;
+  lvl->buildMap( name );
+  
+    
+}
 
 extern theGame Game;
 void initGame() {
@@ -99,14 +109,9 @@ void initGame() {
   Game.screens[ SCREEN_MENU ].windows[ 0 ]->bgPosX = 58;
   Game.screens[ SCREEN_MENU ].windows[ 0 ]->bgPosY = 10;
   */
- // _SURFACE* m = _CREATE_RGBA_SURFACE( MENU_WIDTH, MENU_HEIGHT, MENU_BG_COLOR );
- // Game.screens[ SCREEN_MENU ].windows[ 0 ]->putOnMatrix( 0, m, MENU_POSX, MENU_POSY );
-  
  
-  Game.screens[ SCREEN_MENU ].redraw();
-  //Game.screens[ SCREEN_MENU ].windows[ 0 ]->putOnMatrix( 0, Game.res->bGround[ BGR_LEVEL ], 70, 140 );
+  //Game.screens[ SCREEN_MENU ].redraw();
+  Game.buildLevel( "data\\levels\\tutorial 1" );
+  Game.screens[ SCREEN_GAME ].redraw();
   
-   // Game.screens[ SCREEN_MENU ].windows[ 0 ]->redraw();
-  //Game.screens[ SCREEN_MENU ].windows[ 0 ]->redrawField( 51, 133, 100, 50 );
- //Game.screens[ SCREEN_MENU ].windows[ 0 ]->redrawField( 0, 0, Game.screens[ SCREEN_MENU ].windows[ 0 ]->winRec.w, Game.screens[ SCREEN_MENU ].windows[ 0 ]->winRec.h );
 }

@@ -15,7 +15,7 @@
 #define TITLE_BG_COLOR 0x075f07bc
 #define TITLE_TEXT_POSX 35
 #define TITLE_TEXT_POSY 15
-#define MENU_BG_COLOR 0x075f07bc
+#define MENU_BG_COLOR 0x075f0788  //0x075f07bc
 #define BORDER_MENU_COLOR 0xffffffff
 #define MENU_SELECT_COLOR 0x7834b7ff
 #define MENU_POSX 50
