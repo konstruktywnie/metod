@@ -21,19 +21,25 @@ typedef SDL_PixelFormat _PIXEL_FORMAT;
 typedef Uint32 uint32;
 typedef Uint8 uint8;
 //typedef Uint32 _FLAG32;
-//typedef Uint8 _FLAG8;
+typedef Uint8 _FLAG8;
 typedef uint32 _PIXEL;
 typedef uint32 _COLOR;
 typedef uint32 _SIZE;
 typedef uint32 _POS;
 typedef uint32 _INDEX;
+typedef char _CHAR;
+typedef int _INT;
+typedef unsigned int _UINT;
 typedef SDL_Rect _RECTANGLE;
+
+#define MAX_LINE 255
 
 extern _SURFACE* MainScreen;
 
 _SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight );
 _SURFACE* _CREATE_RGBA_SURFACE( _SIZE tileWidth, _SIZE tileHeight, _COLOR c );
 //_SURFACE* _CONVERT_SURFACE( _SURFACE* destination );
+_CHAR* _LOAD_FILE( _CHAR* file );
 inline void _APPLY_ON_DISPLAY( _SURFACE* source, _RECTANGLE* s, _RECTANGLE* d )
 {
   //SDL_SetAlpha( source, SDL_SRCALPHA, SDL_ALPHA_OPAQUE );
