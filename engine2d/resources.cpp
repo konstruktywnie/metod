@@ -92,6 +92,81 @@ void tileSet::translucentToTransparent() {
   }
 }
 
+void tileSet::copyTile( _INDEX index ) {
+  SDL_Surface *ns = _CREATE_RGBA_SURFACE( tiles[ index ]->w, tiles[ index ]->h );
+  //SDL_SetAlpha( tiles[ index ], 0, SDL_ALPHA_OPAQUE ); //SDL_SRCALPHA
+  _SURFACE_SET_ZALPHA( tiles[ index ] );
+  _SURFACE_BLIT( tiles[ index ], NULL, ns, NULL );
+
+  tiles.push_back( ns );
+}
+
+void apply_pixels( _POS x, _POS y, _SURFACE* source, _SURFACE* destination )
+{
+  _PIXEL* pixels1 = (_PIXEL*)source->pixels;
+  _PIXEL* pixels2 = (_PIXEL*)destination->pixels;
+
+  for( _SIZE i = 0; i < source->h; i++ ) {
+    _SIZE dRow = (i + y) * destination->w;
+	_SIZE sRow = i * source->w;
+    for( _SIZE j = 0; j < source->w; j++ ) {
+	  if( (pixels1[ sRow + j ] & 0xff) != 0 )
+	    pixels2[ dRow + j + x ] = pixels1[ sRow + j ];
+	}
+  }
+}
+SDL_Surface* apply_pixelsRev( _POS x, _POS y, _SURFACE* source, _SURFACE* destination )
+{
+    _SURFACE* ns = _CREATE_RGBA_SURFACE( source->w,  source->h );
+	apply_pixels( 0, 0, source, ns );
+    apply_pixels( 0, 0, destination, ns );
+    _FREE_SURFACE( destination );
+	return ns;
+}
+
+void tileSet::simpleRotation( _INT index, _INT degree ) {
+  if( index < 0 ) index = tiles.size() + index;
+  _SURFACE* r;
+  _PIXEL* pixels1 = (_PIXEL*)tiles[ index ]->pixels;
+  _PIXEL* pixels2;
+
+  if( degree == 180 ) {
+    r = _CREATE_RGBA_SURFACE( tiles[ index ]->w, tiles[ index ]->h );
+	pixels2 = (_PIXEL*)r->pixels;
+    for( _SIZE j = 0; j < tiles[ index ]->h; j++ ) {
+	  _SIZE sRow = j * tiles[ index ]->w;
+	  _SIZE dRow = (tiles[ index ]->h - 1 - j) * tiles[ index ]->w;
+	  for( _SIZE k = 0; k < tiles[ index ]->w; k++ ) {
+	    pixels2[ dRow + tiles[ index ]->w - 1 - k ] = pixels1[ sRow + k ];
+	  }
+	}
+  }
+  if( degree == 90 ) {
+    r = _CREATE_RGBA_SURFACE( tiles[ index ]->h, tiles[ index ]->w );
+	pixels2 = (_PIXEL*)r->pixels;
+    for( _SIZE j = 0; j < tiles[ index ]->h; j++ ) {
+	  _SIZE sRow = j * tiles[ index ]->w;
+	  for( _SIZE k = 0; k < tiles[ index ]->w; k++ ) {
+	    pixels2[ k * r->w + (r->w - 1 - j) ] = pixels1[ sRow + k ];
+	  }
+	}
+  }
+  if( degree == -90 || degree == 270 ) {
+    r = _CREATE_RGBA_SURFACE( tiles[ index ]->h, tiles[ index ]->w );
+	pixels2 = (_PIXEL*)r->pixels;
+    for( _SIZE j = 0; j < tiles[ index ]->h; j++ ) {
+	  _SIZE sRow = j * tiles[ index ]->w;
+	  for( _SIZE k = 0; k < tiles[ index ]->w; k++ ) {
+	    pixels2[ (r->h - 1 - k) * r->w + j ] = pixels1[ sRow + k ];
+	  }
+	}
+  }
+
+  _FREE_SURFACE( tiles[ index ] );
+  tiles[ index ] = r;
+
+}
+
 bool jointField( _POS f1x, _POS f1y, _SIZE f1w, _SIZE f1h, _POS f2x, _POS f2y, _POS f2w, _POS f2h, _POS& jf1x, _POS& jf1y, _POS& jf2x, _POS& jf2y, _SIZE& jfw, _SIZE& jfh )
 {
   _POS f1x_end = f1x + f1w;
