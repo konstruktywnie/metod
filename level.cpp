@@ -2,6 +2,7 @@
 #include "config.h"
 #include "config_resources.h"
 #include "config_screen.h"
+#include "config_game.h"
 #include "engine2d/resources.h"
 #include "engine2d/screen.h"
 #include "level.h"
@@ -30,7 +31,12 @@ bool getTileID( const _CHAR** TRN, _CHAR* tileChars, _INDEX &id ) {
   return false;
 }
 
-
+mapUnit::mapUnit()
+{
+  f_id = T_SPACE;
+  of_id = T_SPACE;
+  flags = 0;
+}
 void theLevel::buildMap( _CHAR* file )
 {
   chs = _LOAD_FILE( file );
@@ -88,18 +94,37 @@ void theLevel::buildMap( _CHAR* file )
   win->planesHeight = win->sectorHeight * rows;
   win->winRec.w = win->planesWidth;
   win->winRec.h = win->planesHeight;
-  
+  _INDEX ground = 0;
   if( water ) {
     win->addPlaneMatrix();
     win->makeBackgroundMatrix( 0,  Game.res->bGround[ BGR_LEVEL ] );
+    ground = 1;
   }
   win->addPlaneMatrix();
+  win->addPlaneMatrix();
+  _INDEX id;
   for( _SIZE r = 0; r < rows; r++ )
   {
     for( _SIZE c = 0; c < cols; c++ )
 	{
-	  if( map[ r ][ c ].f_id < Game.res->mainTileset.tiles.size() && map[ r ][ c ].f_id != T_SPACE )
-	    win->putOnMatrix( 1, Game.res->mainTileset.tiles[ map[ r ][ c ].f_id ], c * win->sectorWidth, r * win->sectorHeight );
+	  _INDEX id = map[ r ][ c ].f_id;
+	  if( id != T_SPACE )
+	  {
+	    if( id == T_FLOOR || (id >= T_PASS1 && id <= T_PLATFORM_MULTIDIRECT) || (id >= T_HOLE && id <= T_QUARTER3) || id == T_PLATFORM || (id >= T_QUARTER1_UP && id <= T_QUARTER1_RIGHT) || (id >= T_PASS1_H && id <= T_PLATFORM_HORIZONTAL) || (id >= T_PASS1_LEFT && id <= T_CRUMBLE) )
+	    {
+		  map[ r ][ c ].flags |= B_PASSABLE;
+	      win->putOnMatrix( ground, Game.res->mainTileset.tiles[ id ], c * win->sectorWidth, r * win->sectorHeight );
+	    }
+		else //if( id < Game.res->mainTileset.tiles.size() )
+	    {
+		  map[ r ][ c ].of_id = id;
+		  win->putOnMatrix( ground, Game.res->mainTileset.tiles[ T_FLOOR ], c * win->sectorWidth, r * win->sectorHeight );
+		  win->putOnMatrix( ground + 1, Game.res->mainTileset.tiles[ id ], c * win->sectorWidth, r * win->sectorHeight );
+		}
+		
+	  }
+	  
+	  
 	}
   }
   
