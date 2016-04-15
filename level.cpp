@@ -118,6 +118,7 @@ void theLevel::buildMap( _CHAR* file )
 		else //if( id < Game.res->mainTileset.tiles.size() )
 	    {
 		  map[ r ][ c ].of_id = id;
+		  map[ r ][ c ].f_id = T_FLOOR;
 		  win->putOnMatrix( ground, Game.res->mainTileset.tiles[ T_FLOOR ], c * win->sectorWidth, r * win->sectorHeight );
 		  win->putOnMatrix( ground + 1, Game.res->mainTileset.tiles[ id ], c * win->sectorWidth, r * win->sectorHeight );
 		}
