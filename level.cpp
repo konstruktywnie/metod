@@ -37,6 +37,45 @@ mapUnit::mapUnit()
   of_id = T_SPACE;
   flags = 0;
 }
+
+bool id_passable( _INDEX id )
+{
+  if( id == T_FLOOR || id == T_PLATFORM && (id >= T_PASS1 && id <= T_PLATFORM_MULTIDIRECT) || (id >= T_HOLE && id <= T_QUARTER3) || id == T_PLATFORM || (id >= T_QUARTER1_UP && id <= T_QUARTER1_RIGHT) || (id >= T_PASS1_H && id <= T_PLATFORM_HORIZONTAL) || (id >= T_PASS1_LEFT && id <= T_CRUMBLE) )
+    return true;
+  return false;	
+}
+
+bool id_water_platform( _INDEX id )
+{
+  if( (id >= T_PLATFORM_UP && id <= T_PLATFORM_MULTIDIRECT) || id == T_PLATFORM || (id >= T_PLATFORM_DOWN && id <= T_PLATFORM_HORIZONTAL) )
+    return true;
+  return false;	
+}
+bool id_item( _INDEX id )
+{
+  if( (id >= T_KEY1 && id <= T_KEY3) || (id >= T_EA && id <= T_TIME) || id == T_PU || id == T_LASSO )
+    return true;
+  return false;	
+}
+bool id_movable( _INDEX id )
+{
+  if( id == T_BOX || (id >= T_GEM1 && id <= T_BALL6) || id == T_PLAYER_EA || id == T_PLAYER_MSA || id == T_BALL7 || id == T_PLAYER_PU || id == T_PLATFORM_M || (id >= T_PLAYER_EA_DOWN && id <= T_PLAYER_PU_RIGHT) || id == T_PLAYER )
+    return true;
+  return false;
+}
+bool id_hole( _INDEX id )
+{
+  if( (id >= T_HOLE && id <= T_QUARTER3) || (id >= T_QUARTER1_UP && id <= T_QUARTER1_RIGHT) )
+    return true;
+  return false;	
+}
+bool id_exploded( _INDEX id )
+{
+  if( id == T_OBSTACLE || id == T_DYNAMITE )
+    return true;
+  return false;	
+}
+
 void theLevel::buildMap( _CHAR* file )
 {
   chs = _LOAD_FILE( file );
@@ -110,15 +149,25 @@ void theLevel::buildMap( _CHAR* file )
 	  _INDEX id = map[ r ][ c ].f_id;
 	  if( id != T_SPACE )
 	  {
-	    if( id == T_FLOOR || (id >= T_PASS1 && id <= T_PLATFORM_MULTIDIRECT) || (id >= T_HOLE && id <= T_QUARTER3) || id == T_PLATFORM || (id >= T_QUARTER1_UP && id <= T_QUARTER1_RIGHT) || (id >= T_PASS1_H && id <= T_PLATFORM_HORIZONTAL) || (id >= T_PASS1_LEFT && id <= T_CRUMBLE) )
+	    if( id_passable( id ) )
 	    {
 		  map[ r ][ c ].flags |= B_PASSABLE;
+		  if( id_water_platform( id ) )
+		    map[ r ][ c ].flags |= B_PLATFORM;
+		  if( id_hole( id ) )
+            map[ r ][ c ].flags |= B_HOLE;
 	      win->putOnMatrix( ground, Game.res->mainTileset.tiles[ id ], c * win->sectorWidth, r * win->sectorHeight );
 	    }
 		else //if( id < Game.res->mainTileset.tiles.size() )
 	    {
 		  map[ r ][ c ].of_id = id;
 		  map[ r ][ c ].f_id = T_FLOOR;
+		  if( id_item( id ) )
+		    map[ r ][ c ].flags |= B_ITEM;
+		  if( id_movable( id ) )
+  		    map[ r ][ c ].flags |= B_MOVABLE;
+		  if( id_exploded( id ) )
+		    map[ r ][ c ].flags |= B_EXPLODED;
 		  win->putOnMatrix( ground, Game.res->mainTileset.tiles[ T_FLOOR ], c * win->sectorWidth, r * win->sectorHeight );
 		  win->putOnMatrix( ground + 1, Game.res->mainTileset.tiles[ id ], c * win->sectorWidth, r * win->sectorHeight );
 		}
