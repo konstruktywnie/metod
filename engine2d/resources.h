@@ -1,3 +1,9 @@
+struct visObj {
+  _POS x, y;
+  _SURFACE* s;
+  bool drawed;
+};
+
 struct tileSet 
 {
   vector<_SURFACE*> tiles;
@@ -10,11 +16,27 @@ struct tileSet
   void copyTile( _INDEX i );
   void simpleRotation( _INT index, _INT degree );
 };
+struct sequence
+{
+  int begin, end, actualFrame;
+};
+struct tileSeq
+{
+  tileSet *ts;
+  _INDEX id;
+  _INDEX actualSeq;
+  vector<sequence*> seq;
+  visObj* actualVO;
+  tileSeq();
+  tileSeq( _CHAR* file );
+  void prepare( tileSet* t );
+};
 struct appResources 
 {
   tileSet mainTileset, font;
   vector<tileSet> animations;
   vector<_SURFACE*> bGround;
+  vector<tileSeq> tileSequences;
   appResources();
 };
 

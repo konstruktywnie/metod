@@ -1,10 +1,4 @@
 
-struct visObj {
-  _POS x, y;
-  _SURFACE* s;
-  bool drawed;
-};
-
 struct mSector {
   vector<visObj*> vo;
   bool opaque;
@@ -40,7 +34,8 @@ struct theWindow {
   void makeBorder( _SIZE bw, _COLOR bc );
   void redrawMatrix( _INDEX index, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH );
   void redrawVObjs( _INDEX index, _POS visFX, _POS visFY, _SIZE visFW, _SIZE visFH );
-  void putOnMatrix( _INDEX i, _SURFACE* s, _POS posx, _POS posy );
+  visObj* putOnMatrix( _INDEX i, _SURFACE* s, _POS posx, _POS posy );
+  visObj* putSeqOnMatrix( _INDEX i, tileSeq* tseq, _POS posx, _POS posy );
   void print_vo_sizes( _INDEX index );
   void onMatrixCoordinates( _INDEX index, _POS x, _POS y, _SIZE w, _SIZE h, _SIZE& row, _SIZE& col, _SIZE& endRow, _SIZE& endCol );
   void prepareMatrixToDraw( _INDEX i, _SIZE row, _SIZE col, _SIZE endRow, _SIZE endCol );

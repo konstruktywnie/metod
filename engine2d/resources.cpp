@@ -1,7 +1,28 @@
 #include "../framework_dependent/fw.h"
 #include "resources.h"
+#include "screen.h"
 #include "../config.h"
 
+tileSeq::tileSeq()
+{
+}
+tileSeq::tileSeq( _CHAR* file )
+{
+  tileSet t;
+  t.loadFromFile( file, 0, 0 );
+  prepare( &t );
+}
+void tileSeq::prepare( tileSet* t )
+{
+  ts = t;
+  if( !seq.empty() )
+    seq.clear();
+  sequence* s = new sequence;
+  s->begin = s->actualFrame = 0;
+  s->end = ts->tiles.size();
+  seq.resize( 1 );
+  seq[ 0 ] = s;
+}
 
 _SIZE tileSet::loadFromFile( char* f, _SIZE tileWidth, _SIZE tileHeight ) {
   _SURFACE* image;

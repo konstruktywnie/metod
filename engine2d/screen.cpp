@@ -258,7 +258,7 @@ void theWindow::makeBorder( _SIZE bw, _COLOR bc )
   border = true;
   
 }
-void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
+visObj* theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
 {
   _SIZE rows = pMat[ index ].size();
   _SIZE cols = pMat[ index ][ 0 ].size();
@@ -283,7 +283,15 @@ void theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy )
       pMat[ index ][ row ][ coli ].vo[ lastO ] = vObj;
 	}
   }
+  return vObj;
 }
+
+visObj* theWindow::putSeqOnMatrix( _INDEX i, tileSeq* tseq, _POS posx, _POS posy )
+{
+  _INDEX frame = tseq->seq[ tseq->actualSeq ]->actualFrame;
+  return putOnMatrix( i, tseq->ts->tiles[ frame ], posx, posy );
+}
+
 void theWindow::print_vo_sizes( _INDEX index ) {
   for( _SIZE i = 0; i < pMat[ 0 ].size(); i++ ) {
     for( _SIZE j = 0; j < pMat[ 0 ][ 0 ].size(); j++ )
