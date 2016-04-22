@@ -112,6 +112,10 @@ void initGame() {
  
   //Game.screens[ SCREEN_MENU ].redraw();
   Game.buildLevel( "data\\levels\\tutorial 1" );
+  
+  Game.screens[ SCREEN_GAME ].windows[ WINDOW_LEVEL ]->addPlaneMatrix();
+  Game.screens[ SCREEN_GAME ].windows[ WINDOW_LEVEL ]->putSeqOnMatrix( 3, &Game.res->tileSequences[ 0 ], 0, 0 );
+  
   Game.screens[ SCREEN_GAME ].redraw();
   
 }

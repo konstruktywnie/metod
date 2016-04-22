@@ -164,7 +164,14 @@ void prepareMainTiles( appResources* res )
   res->mainTileset.tiles.push_back( res->animations[ ID_ANIMATION_EXPLODE_EA ].tiles[ 0 ] );
 
 }
+
+void prepareSequences( appResources* res )
+{
+  res->tileSequences.resize( 1 );
+  res->tileSequences[ 0 ].prepare( &res->animations[ ID_ANIMATION_EXPLODE ] );
   
+}
+
 appResources::appResources()
 {
   mainTileset.loadFromFile( RES_MAIN_TILESET, 0, 0 );
@@ -177,6 +184,6 @@ appResources::appResources()
   font.translucentToTransparent();
   
   prepareMainTiles( this );
-  
+  prepareSequences( this );
 }
 
