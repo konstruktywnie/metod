@@ -51,7 +51,7 @@ inline void _UPDATE_DISPLAY( _RECTANGLE* r )
   SDL_UpdateRect( MainScreen, r->x, r->y, r->w, r->h );
 }
 
-inline _SURFACE* _LOAD_IMG( char* f ) {
+inline _SURFACE* _LOAD_IMG( _CHAR* f ) {
   return IMG_Load( f );
 }
 /*inline _PIXEL_FORMAT* _GET_PIXEL_FORMAT( _SURFACE* s ) {

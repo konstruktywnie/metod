@@ -26,7 +26,7 @@ _CHAR* _LOAD_FILE( _CHAR* file ) {
   fSize = ftell( f );
   rewind( f );
 
-  _CHAR* buf = new char [fSize + 1];
+  _CHAR* buf = new _CHAR [fSize + 1];
   buf[ fSize ] = 0;
   if( fread( buf , fSize, 1 , f ) != 1 ) {
     fprintf( stderr, "Error: Can not read file %s", file );
