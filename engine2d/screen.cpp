@@ -154,9 +154,9 @@ void theWindow::makeBackground( _SURFACE* destination, _SURFACE* image )
   
 }
 
-_SIZE theWindow::print( tileSet* font, _SURFACE* destination, _POS x, _POS y, const char *fmt, ... )
+_SIZE theWindow::print( tileSet* font, _SURFACE* destination, _POS x, _POS y, const _CHAR* fmt, ... )
 {
-  char buffer[ MAX_LINE ];
+  _CHAR buffer[ MAX_LINE ];
   va_list args;
   va_start( args, fmt );
   vsprintf( buffer, fmt, args );

@@ -24,7 +24,7 @@ void tileSeq::prepare( tileSet* t )
   seq[ 0 ] = s;
 }
 
-_SIZE tileSet::loadFromFile( char* f, _SIZE tileWidth, _SIZE tileHeight ) {
+_SIZE tileSet::loadFromFile( _CHAR* f, _SIZE tileWidth, _SIZE tileHeight ) {
   _SURFACE* image;
   image = _LOAD_IMG( f );
   if( !f || image == NULL ) {
