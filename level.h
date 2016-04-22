@@ -3,12 +3,13 @@ struct mapUnit
   _INDEX f_id;
   _INDEX of_id;
   _FLAG8 flags;
+  mapUnit();
 };
 
 struct inventory {
-  char key1, key2, key3;
-  int ea, msa, pu;
-  int time, fuel;
+  _UINT key1, key2, key3;
+  _UINT ea, msa, pu;
+  _UINT time, fuel;
 };
 struct thePlayer {
   inventory items;
