@@ -27,11 +27,14 @@ typedef uint32 _COLOR;
 typedef uint32 _SIZE;
 typedef uint32 _POS;
 typedef uint32 _INDEX;
+typedef uint32 _TIME;
 typedef char _CHAR;
 typedef int _INT;
 typedef unsigned int _UINT;
 typedef SDL_Rect _RECTANGLE;
-
+typedef SDL_NewTimerCallback _TIMER_CALLBACK;
+typedef SDL_TimerID _TIMER_ID;
+typedef SDL_Event _EVENT;
 #define MAX_LINE 255
 
 extern _SURFACE* MainScreen;
@@ -85,4 +88,26 @@ inline void _FREE_SURFACE( _SURFACE* s ) {
 }
 inline void _FILL_RECT( _SURFACE* s, _RECTANGLE* clear, _COLOR color ) {
   SDL_FillRect( s, clear, color );
+}
+
+inline void _PUSH_EVENT( void* data, _INT event_code ) {
+  SDL_Event event;
+  event.type = SDL_USEREVENT;
+  event.user.code = event_code;
+  event.user.data1 = data;
+  event.user.data2 = 0;
+  SDL_PushEvent( &event );
+}
+
+inline _TIMER_ID _ADD_TIMER( _TIME interval, _TIMER_CALLBACK callback, void* param )
+{
+  //_TIMER_ID t = SDL_AddTimer( interval, callback, param );
+  //if( !t ) fprintf( stderr, "Error: Can not start timer\n" );
+  return SDL_AddTimer( interval, callback, param );
+}
+inline void _REMOVE_TIMER( _TIMER_ID id )
+{
+  if( !SDL_RemoveTimer( id ) ) {
+    fprintf( stderr, "Error: Can not remove timer\n" );
+  }
 }

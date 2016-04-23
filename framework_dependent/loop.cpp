@@ -1,4 +1,5 @@
 #include "fw.h"
+#include "../config_resources.h"
 #include "../config_events.h"
 #include "../engine2d/resources.h"
 #include "../engine2d/screen.h"
@@ -9,7 +10,7 @@
 void _FRAMEWORK_LOOP()
 {
   bool run = true;
-  SDL_Event* event = new SDL_Event;
+  _EVENT* event = new _EVENT;
   while( run ) {
     if ( SDL_WaitEvent( event ) )
 	  switch( event->type )
@@ -18,7 +19,7 @@ void _FRAMEWORK_LOOP()
 		  if( event->user.code == EVENT_TILESET_ANIMATION ) {
 		    PEvents[ EVENT_TILESET_ANIMATION ] = true;
 		  }
-		  attendProgEvents();
+		  attendProgEvents( event );
 		break;
 		case SDL_QUIT:
 		  run = false;
