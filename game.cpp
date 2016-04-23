@@ -2,6 +2,7 @@
 #include "config.h"
 #include "config_resources.h"
 #include "config_screen.h"
+#include "config_events.h"
 #include "engine2d/resources.h"
 #include "engine2d/screen.h"
 #include "level.h"
@@ -117,5 +118,6 @@ void initGame() {
   Game.screens[ SCREEN_GAME ].windows[ WINDOW_LEVEL ]->putSeqOnMatrix( 3, &Game.res->tileSequences[ 0 ], 0, 0 );
   
   Game.screens[ SCREEN_GAME ].redraw();
-  
+  Game.res->tileSequences[ 0 ].start();
+  //_PUSH_EVENT( (void*) &Game.res->tileSequences[ 0 ], EVENT_TILESET_ANIMATION );
 }

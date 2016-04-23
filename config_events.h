@@ -3,9 +3,7 @@ enum ProgEventNames { EVENT_TILESET_ANIMATION = 0, EVENT_TILESET_COLLIDED, EVENT
 enum GameEventNames { EVENT_GAME_FULL_HOLE = 0, EVENT_UPDATE_INFO, MAX_GameEventNames };
 enum KeysNames { K_UP = 0, K_LEFT, K_RIGHT, K_DOWN, K_LCTRL, K_LALT, K_SPACE, MAX_KeysNames };
 
-void attendProgEvents();
+void attendProgEvents( _EVENT* event );
 void attendKeyEvents();
 void attendKeyEventsMenu();
 void attendGameEvents();
-
-

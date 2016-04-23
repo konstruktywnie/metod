@@ -1,1 +1,1 @@
-#include "config_events.h"extern bool PEvents[];extern bool KEvents[];extern bool GEvents[];void attendKeyEvents() {}void attendKeyEventsMenu() {}
+#include "framework_dependent/fw.h"#include "config_events.h"extern bool PEvents[];extern bool KEvents[];extern bool GEvents[];void attendKeyEvents() {}void attendKeyEventsMenu() {}

@@ -179,4 +179,5 @@ void theLevel::buildMap( _CHAR* file )
   }
   
   delete[] chs;
+
 }
