@@ -25,11 +25,18 @@ struct tileSeq
   tileSet *ts;
   _INDEX id;
   _INDEX actualSeq;
+  _INDEX nextFrame;
   vector<sequence*> seq;
   visObj* actualVO;
+  _TIME interval;
+  _TIMER_ID t_id;
   tileSeq();
   tileSeq( _CHAR* file );
   void prepare( tileSet* t );
+  void start();
+  void stop();
+  void draw();
+  
 };
 struct appResources 
 {

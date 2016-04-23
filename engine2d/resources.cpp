@@ -1,10 +1,35 @@
 #include "../framework_dependent/fw.h"
+#include "../config_events.h"
 #include "resources.h"
 #include "screen.h"
 #include "../config.h"
 
+_TIME tileSeqCallback( _TIME interval, void* param )
+{
+  _PUSH_EVENT( param, EVENT_TILESET_ANIMATION );
+  return interval;
+}
+
+void tileSeq::start()
+{
+  t_id = _ADD_TIMER( interval, tileSeqCallback, (void*) this );
+    
+}
+void tileSeq::stop()
+{
+  _REMOVE_TIMER( t_id );
+}
+
+void tileSeq::draw()
+{
+  
+}
+
 tileSeq::tileSeq()
 {
+  actualSeq = 0;
+  nextFrame = 1;
+  interval = DEFAULT_INTERVAL;
 }
 tileSeq::tileSeq( _CHAR* file )
 {
