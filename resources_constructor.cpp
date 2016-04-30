@@ -167,8 +167,9 @@ void prepareMainTiles( appResources* res )
 
 void prepareSequences( appResources* res )
 {
-  res->tileSequences.resize( 1 );
+  res->tileSequences.resize( 2 );
   res->tileSequences[ 0 ].prepare( &res->animations[ ID_ANIMATION_EXPLODE ] );
+  res->tileSequences[ 1 ].prepare( &res->animations[ ID_ANIMATION_EXPLODE_MSA ] );
   
 }
 
