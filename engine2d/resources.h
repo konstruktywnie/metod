@@ -18,18 +18,22 @@ struct tileSet
 };
 struct sequence
 {
-  int begin, end, actualFrame;
+  _INT begin, end, actualFrame;
 };
+
+struct theWindow;
 struct tileSeq
 {
   tileSet *ts;
   _INDEX id;
   _INDEX actualSeq;
-  _INDEX nextFrame;
+  _INT nextFrame;
   vector<sequence*> seq;
   visObj* actualVO;
   _TIME interval;
   _TIMER_ID t_id;
+  theWindow* win;
+  bool looped;
   tileSeq();
   tileSeq( _CHAR* file );
   void prepare( tileSet* t );

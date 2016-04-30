@@ -22,7 +22,26 @@ void tileSeq::stop()
 
 void tileSeq::draw()
 {
+  win->redrawField( actualVO->x, actualVO->y, actualVO->s->w, actualVO->s->h );
+  seq[ actualSeq ]->actualFrame += nextFrame;
+  if( seq[ actualSeq ]->actualFrame > seq[ actualSeq ]->end )
+  {
+    if( looped )
+      seq[ actualSeq ]->actualFrame = seq[ actualSeq ]->begin;
+	else { stop(); return; }
+  }
+  if( seq[ actualSeq ]->actualFrame < seq[ actualSeq ]->begin )
+  {
+    if( looped )
+      seq[ actualSeq ]->actualFrame = seq[ actualSeq ]->end;
+	else { stop(); return; }
+  }
+  actualVO->s = ts->tiles[ seq[ actualSeq ]->actualFrame ];
   
+  //fprintf( stderr, " (seq[ actualSeq ]->actualFrame)%i (seq[ actualSeq ]->begin)%i (seq[ actualSeq ]->end)%i\n", seq[ actualSeq ]->actualFrame, seq[ actualSeq ]->begin, seq[ actualSeq ]->end );
+  
+  
+  	
 }
 
 tileSeq::tileSeq()
@@ -30,6 +49,7 @@ tileSeq::tileSeq()
   actualSeq = 0;
   nextFrame = 1;
   interval = DEFAULT_INTERVAL;
+  looped = false;
 }
 tileSeq::tileSeq( _CHAR* file )
 {
@@ -44,7 +64,7 @@ void tileSeq::prepare( tileSet* t )
     seq.clear();
   sequence* s = new sequence;
   s->begin = s->actualFrame = 0;
-  s->end = ts->tiles.size();
+  s->end = ts->tiles.size() - 1;
   seq.resize( 1 );
   seq[ 0 ] = s;
 }
