@@ -22,7 +22,7 @@ void tileSeq::stop()
 
 void tileSeq::draw()
 {
-  win->redrawField( actualVO->x, actualVO->y, actualVO->s->w, actualVO->s->h );
+  actualVO->win->redrawField( actualVO->x, actualVO->y, actualVO->s->w, actualVO->s->h );
   seq[ actualSeq ]->actualFrame += nextFrame;
   if( seq[ actualSeq ]->actualFrame > seq[ actualSeq ]->end )
   {

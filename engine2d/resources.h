@@ -1,7 +1,11 @@
+struct theWindow;
 struct visObj {
+  theWindow* win;
+  _INDEX m;
   _POS x, y;
   _SURFACE* s;
   bool drawed;
+  
 };
 
 struct tileSet 
@@ -21,7 +25,6 @@ struct sequence
   _INT begin, end, actualFrame;
 };
 
-struct theWindow;
 struct tileSeq
 {
   tileSet *ts;
@@ -32,7 +35,6 @@ struct tileSeq
   visObj* actualVO;
   _TIME interval;
   _TIMER_ID t_id;
-  theWindow* win;
   bool looped;
   tileSeq();
   tileSeq( _CHAR* file );

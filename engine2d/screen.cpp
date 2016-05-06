@@ -272,7 +272,9 @@ visObj* theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy 
   visObj* vObj = new visObj;
   vObj->x = posx; 
   vObj->y = posy; 
-  vObj->s = s; 
+  vObj->s = s;
+  vObj->win = this;
+  vObj->m = index;
   _SIZE lastO;
   for( ; row < rowEnd; row++ )
   {
