@@ -275,16 +275,24 @@ visObj* theWindow::putOnMatrix( _INDEX index, _SURFACE* s, _POS posx, _POS posy 
   vObj->s = s;
   vObj->win = this;
   vObj->m = index;
-  _SIZE lastO;
+  vObj->col = col;
+  vObj->row = row;
+  vObj->colEnd = colEnd;
+  vObj->rowEnd = rowEnd;
+  
+ // _SIZE lastO;
   for( ; row < rowEnd; row++ )
   {
     for( _SIZE coli = col; coli < colEnd; coli++ )
 	{
-	  lastO = pMat[ index ][ row ][ coli ].vo.size();
+	  pMat[ index ][ row ][ coli ].vo.push_back( vObj );
+	  /*lastO = pMat[ index ][ row ][ coli ].vo.size();
       pMat[ index ][ row ][ coli ].vo.resize( lastO + 1 );
       pMat[ index ][ row ][ coli ].vo[ lastO ] = vObj;
+	  */
 	}
   }
+  
   return vObj;
 }
 

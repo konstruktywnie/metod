@@ -3,8 +3,16 @@ struct visObj {
   theWindow* win;
   _INDEX m;
   _POS x, y;
+  _SIZE col, row, colEnd, rowEnd;
   _SURFACE* s;
+  _INT dx, dy, dx_abs, dy_abs, x_moveRange, y_moveRange;
+  _TIME speed;  
+  _TIMER_ID t_id;
   bool drawed;
+  void draw();
+  void deltaMove();
+  void startMove();
+  void stopMove();
   
 };
 

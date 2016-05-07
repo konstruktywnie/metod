@@ -370,3 +370,67 @@ bool jointField( _POS f1x, _POS f1y, _SIZE f1w, _SIZE f1h, _POS f2x, _POS f2y, _
   }
   return false;
 }
+
+void visObj::deltaMove()
+{
+  x += dx;
+  y += dy;
+  x_moveRange -= dx_abs;
+  if( x_moveRange < 0 ) { stopMove(); return; }
+  y_moveRange -= dy_abs;
+  if( y_moveRange < 0 ) { stopMove(); return; }
+  
+  _SIZE col2 = x / win->sectorWidth;
+  _SIZE row2 = y / win->sectorHeight;
+  _SIZE colEnd2 = (x + s->w) / win->sectorWidth + 1;
+  _SIZE rowEnd2 = (y + s->h) / win->sectorHeight + 1;
+  if( col2 != col || row2 != row || colEnd2 != colEnd || rowEnd2 != rowEnd )
+  {
+    _SIZE lastO;
+    for( ; row < rowEnd; row++ )
+    {
+      for( _SIZE coli = col; coli < colEnd; coli++ )
+	  {
+	    lastO = win->pMat[ m ][ row ][ coli ].vo.size();
+        for( _SIZE o = 0; o < lastO; o++ )
+		{
+		  if( win->pMat[ m ][ row ][ coli ].vo[ o ] == this )
+		  {
+		    win->pMat[ m ][ row ][ coli ].vo.erase( win->pMat[ m ][ row ][ coli ].vo.begin() + o );
+			break;
+		  }
+		}
+	  }
+    }
+	
+	for( ; row2 < rowEnd2; row2++ )
+    {
+      for( _SIZE coli = col2; coli < colEnd2; coli++ )
+	  {
+	    win->pMat[ m ][ row2 ][ coli ].vo.push_back( this );
+	  }
+    }
+  }
+}
+
+_TIME visObjCallback( _TIME speed, void* param )
+{
+  _PUSH_EVENT( param, EVENT_MOVE_OBJ );
+  return speed;
+}
+
+void visObj::startMove()
+{
+  dx_abs = abs( dx );
+  dy_abs = abs( dy );
+  t_id = _ADD_TIMER( speed, visObjCallback, (void*) this );
+}
+void visObj::stopMove()
+{
+  _REMOVE_TIMER( t_id );
+}
+
+void visObj::draw()
+{
+  win->redrawField( x - dx_abs, y - dy_abs, s->w + dx_abs, s->h + dy_abs );
+}
