@@ -19,6 +19,9 @@ void _FRAMEWORK_LOOP()
 		  if( event->user.code == EVENT_TILESET_ANIMATION ) {
 		    PEvents[ EVENT_TILESET_ANIMATION ] = true;
 		  }
+		  if( event->user.code == EVENT_MOVE_OBJ ) {
+		    PEvents[ EVENT_MOVE_OBJ ] = true;
+		  }
 		  attendProgEvents( event );
 		break;
 		case SDL_QUIT:
