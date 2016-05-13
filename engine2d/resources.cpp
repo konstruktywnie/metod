@@ -411,6 +411,10 @@ void visObj::deltaMove()
 	  }
     }
   }
+  col = col2;
+  row = row2;
+  colEnd = colEnd2;
+  rowEnd = rowEnd2;
 }
 
 _TIME visObjCallback( _TIME speed, void* param )
